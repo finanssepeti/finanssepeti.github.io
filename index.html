@@ -1,167 +1,115 @@
-import customtkinter as ctk
-from tkinter import ttk, messagebox
-import yfinance as yf
-import sqlite3
-from datetime import datetime
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Finans Sepeti</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-# --- Görünüm Ayarları ---
-ctk.set_appearance_mode("Dark")
-ctk.set_default_color_theme("blue")
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+}
+.container {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+}
+.card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 15px;
+    padding: 25px;
+}
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: none;
+}
+button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #00c6ff;
+    font-weight: bold;
+}
+.link {
+    text-align: center;
+    margin-top: 10px;
+}
+.link span {
+    color: #00c6ff;
+}
+</style>
+</head>
 
-class YatirimUygulamasi(ctk.CTk):
-    def __init__(self):
-        super().__init__()
+<body>
 
-        self.title("Yatırım Portföy Analiz Sistemi v2.0")
-        self.geometry("1200x700")
+<div class="container" id="login">
+<div class="card">
+<h2>Finans Sepeti</h2>
+<input type="email" placeholder="E-mail">
+<input type="password" placeholder="Şifre">
+<button type="button" onclick="show('dashboard')">Giriş Yap</button>
+<div class="link">
+<span onclick="show('register')">Üye Ol</span> •
+<span onclick="show('forgot')">Şifremi Unuttum</span>
+</div>
+</div>
+</div>
 
-        self.db_hazirla()
+<div class="container" id="register" style="display:none;">
+<div class="card">
+<h2>Üye Ol</h2>
+<input type="email" placeholder="E-mail">
+<button type="button" onclick="show('verify')">Kod Gönder</button>
+</div>
+</div>
 
-        # --- ANA DÜZEN ---
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_rowconfigure(0, weight=1)
+<div class="container" id="verify" style="display:none;">
+<div class="card">
+<h2>Kod Doğrula</h2>
+<input type="text" placeholder="Kod">
+<button type="button" onclick="show('password')">Devam</button>
+</div>
+</div>
 
-        # --- SOL PANEL (Kontrol Paneli) ---
-        self.sidebar = ctk.CTkFrame(self, width=280)
-        self.sidebar.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
+<div class="container" id="password" style="display:none;">
+<div class="card">
+<h2>Şifre Oluştur</h2>
+<input type="password" placeholder="Yeni Şifre">
+<button type="button" onclick="show('login')">Kaydet</button>
+</div>
+</div>
 
-        ctk.CTkLabel(self.sidebar, text="📊 PORTFÖY YÖNETİMİ", font=("Arial", 20, "bold")).pack(pady=20)
+<div class="container" id="forgot" style="display:none;">
+<div class="card">
+<h2>Şifremi Unuttum</h2>
+<input type="email" placeholder="E-mail">
+<button type="button" onclick="show('verify')">Kod Gönder</button>
+</div>
+</div>
 
-        self.ent_kod = ctk.CTkEntry(self.sidebar, placeholder_text="Sembol (BTC-USD, GC=F, THYAO.IS)")
-        self.ent_kod.pack(pady=5, padx=20, fill="x")
+<div class="container" id="dashboard" style="display:none;">
+<div class="card">
+<h2>Benim Sayfam</h2>
+<p>🟡 Altın</p>
+<p>⚪ Gümüş</p>
+<p>📈 Borsa</p>
+<p>₿ Kripto</p>
+</div>
+</div>
 
-        self.ent_miktar = ctk.CTkEntry(self.sidebar, placeholder_text="Adet/Miktar")
-        self.ent_miktar.pack(pady=5, padx=20, fill="x")
+<script>
+function show(id){
+document.querySelectorAll('.container').forEach(e => e.style.display = 'none');
+document.getElementById(id).style.display = 'block';
+}
+</script>
 
-        self.ent_fiyat = ctk.CTkEntry(self.sidebar, placeholder_text="Alış Birim Fiyatı")
-        self.ent_fiyat.pack(pady=5, padx=20, fill="x")
-
-        self.btn_kaydet = ctk.CTkButton(self.sidebar, text="Yatırımı Kaydet", command=self.yatirim_kaydet)
-        self.btn_kaydet.pack(pady=15, padx=20, fill="x")
-
-        ctk.CTkLabel(self.sidebar, text="GRAFİK SEÇENEKLERİ", font=("Arial", 14, "bold")).pack(pady=(20, 5))
-        
-        self.btn_pasta = ctk.CTkButton(self.sidebar, text="Varlık Dağılımı (Pasta)", fg_color="#E67E22", command=self.grafik_pasta)
-        self.btn_pasta.pack(pady=5, padx=20, fill="x")
-
-        self.btn_cubuk = ctk.CTkButton(self.sidebar, text="Zamana Göre Kâr/Zarar", fg_color="#9B59B6", command=self.grafik_cubuk)
-        self.btn_cubuk.pack(pady=5, padx=20, fill="x")
-
-        self.btn_temizle = ctk.CTkButton(self.sidebar, text="Grafiği Kapat", fg_color="gray", command=self.grafik_temizle)
-        self.btn_temizle.pack(pady=20, padx=20, fill="x")
-
-        # --- SAĞ PANEL (Tablo ve Grafikler) ---
-        self.right_frame = ctk.CTkFrame(self)
-        self.right_frame.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
-
-        # Tablo
-        self.tablo_frame = ctk.CTkFrame(self.right_frame)
-        self.tablo_frame.pack(fill="both", expand=True, padx=10, pady=10)
-
-        self.tablo = ttk.Treeview(self.tablo_frame, columns=("Tarih", "Kod", "Miktar", "Alış", "Güncel", "K/Z TL", "K/Z %"), show='headings')
-        for col in self.tablo["columns"]:
-            self.tablo.heading(col, text=col)
-            self.tablo.column(col, width=100, anchor="center")
-        self.tablo.pack(fill="both", expand=True)
-
-        # Grafik Alanı (Başlangıçta boş)
-        self.canvas_frame = ctk.CTkFrame(self.right_frame, height=300)
-        self.canvas_frame.pack(fill="both", expand=True, padx=10, pady=10)
-        self.canvas = None
-
-        self.tabloyu_doldur()
-
-    def db_hazirla(self):
-        conn = sqlite3.connect('yatirim_v2.db')
-        conn.execute("CREATE TABLE IF NOT EXISTS yatirimlar (id INTEGER PRIMARY KEY, tarih TEXT, kod TEXT, miktar REAL, alis REAL)")
-        conn.commit()
-        conn.close()
-
-    def yatirim_kaydet(self):
-        try:
-            kod, miktar, fiyat = self.ent_kod.get().upper(), float(self.ent_miktar.get()), float(self.ent_fiyat.get())
-            tarih = datetime.now().strftime("%Y-%m-%d")
-            conn = sqlite3.connect('yatirim_v2.db')
-            conn.execute("INSERT INTO yatirimlar (tarih, kod, miktar, alis) VALUES (?, ?, ?, ?)", (tarih, kod, miktar, fiyat))
-            conn.commit()
-            conn.close()
-            messagebox.showinfo("Başarılı", "Yatırım eklendi.")
-            self.tabloyu_doldur()
-        except:
-            messagebox.showerror("Hata", "Lütfen değerleri kontrol edin.")
-
-    def tabloyu_doldur(self):
-        for i in self.tablo.get_children(): self.tablo.delete(i)
-        conn = sqlite3.connect('yatirim_v2.db')
-        rows = conn.execute("SELECT * FROM yatirimlar").fetchall()
-        conn.close()
-
-        for row in rows:
-            f = self.fiyat_cek(row[2])
-            if f:
-                kz_tl = (row[3] * f) - (row[3] * row[4])
-                kz_p = (kz_tl / (row[3] * row[4])) * 100
-                self.tablo.insert("", "end", values=(row[1], row[2], row[3], row[4], f, round(kz_tl,2), f"%{round(kz_p,2)}"))
-
-    def fiyat_cek(self, kod):
-        try: return round(yf.Ticker(kod).history(period='1d')['Close'].iloc[-1], 2)
-        except: return None
-
-    def grafik_temizle(self):
-        if self.canvas:
-            self.canvas.get_tk_widget().destroy()
-            self.canvas = None
-
-    def grafik_pasta(self):
-        self.grafik_temizle()
-        conn = sqlite3.connect('yatirim_v2.db')
-        data = conn.execute("SELECT kod, miktar, alis FROM yatirimlar").fetchall()
-        conn.close()
-        
-        if not data: return
-        
-        labels = [d[0] for d in data]
-        values = [d[1] * d[2] for d in data] # Toplam maliyet bazlı dağılım
-
-        fig, ax = plt.subplots(figsize=(5, 4), dpi=100)
-        fig.patch.set_facecolor('#2b2b2b')
-        ax.pie(values, labels=labels, autopct='%1.1f%%', textprops={'color':"w"})
-        ax.set_title("Portföy Dağılımı (Maliyet Bazlı)", color="w")
-
-        self.canvas = FigureCanvasTkAgg(fig, master=self.canvas_frame)
-        self.canvas.draw()
-        self.canvas.get_tk_widget().pack(fill="both", expand=True)
-
-    def grafik_cubuk(self):
-        self.grafik_temizle()
-        conn = sqlite3.connect('yatirim_v2.db')
-        data = conn.execute("SELECT tarih, kod, miktar, alis FROM yatirimlar ORDER BY tarih").fetchall()
-        conn.close()
-
-        if not data: return
-
-        tarihler = [d[0] for d in data]
-        kazanclar = []
-        for d in data:
-            guncel = self.fiyat_cek(d[1])
-            kazanclar.append((d[2] * guncel) - (d[2] * d[3]) if guncel else 0)
-
-        fig, ax = plt.subplots(figsize=(5, 4), dpi=100)
-        fig.patch.set_facecolor('#2b2b2b')
-        ax.set_facecolor('#2b2b2b')
-        
-        renkler = ['green' if x > 0 else 'red' for x in kazanclar]
-        ax.bar(tarihler, kazanclar, color=renkler)
-        ax.tick_params(axis='x', colors='white', rotation=45)
-        ax.tick_params(axis='y', colors='white')
-        ax.set_title("Tarihe Göre Kâr/Zarar Durumu (TL)", color="w")
-
-        self.canvas = FigureCanvasTkAgg(fig, master=self.canvas_frame)
-        self.canvas.draw()
-        self.canvas.get_tk_widget().pack(fill="both", expand=True)
-
-if __name__ == "__main__":
-    app = YatirimUygulamasi()
-    app.mainloop()
+</body>
+</html>
