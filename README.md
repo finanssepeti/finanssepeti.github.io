@@ -13,14 +13,12 @@ body {
     color: #fff;
 }
 
-/* Ortak alan */
 .container {
     max-width: 400px;
     margin: auto;
     padding: 20px;
 }
 
-/* Giriş kartı */
 .card {
     background: rgba(255,255,255,0.08);
     border-radius: 15px;
@@ -28,89 +26,112 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-/* Başlık */
 h1 {
     text-align: center;
-    margin-bottom: 20px;
 }
 
-/* Inputlar */
 input {
     width: 100%;
     padding: 12px;
     margin: 10px 0;
     border-radius: 8px;
     border: none;
-    outline: none;
     font-size: 16px;
 }
 
-/* Buton */
 button {
     width: 100%;
     padding: 12px;
-    margin-top: 15px;
+    margin-top: 10px;
     border: none;
     border-radius: 8px;
     background: #00c6ff;
-    color: #000;
     font-size: 16px;
     font-weight: bold;
 }
 
-/* Yatırım kartları */
-.grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+.link {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
 }
 
-.box {
-    background: rgba(255,255,255,0.1);
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    font-size: 18px;
+.link span {
+    color: #00c6ff;
+    cursor: pointer;
 }
 </style>
 </head>
 
 <body>
 
-<!-- GİRİŞ EKRANI -->
+<!-- GİRİŞ -->
 <div class="container" id="login">
-    <div class="card">
-        <h1>Finans Sepeti</h1>
-        <input type="email" id="email" placeholder="E-mail adresi">
-        <input type="password" id="password" placeholder="Şifre">
-        <button onclick="login()">Giriş Yap</button>
-    </div>
+<div class="card">
+<h1>Finans Sepeti</h1>
+<input type="email" placeholder="E-mail">
+<input type="password" placeholder="Şifre">
+<button onclick="show('dashboard')">Giriş Yap</button>
+
+<div class="link">
+<span onclick="show('register')">Üye Ol</span> •
+<span onclick="show('forgot')">Şifremi Unuttum</span>
+</div>
+</div>
 </div>
 
-<!-- ANA SAYFA -->
-<div class="container" id="dashboard" style="display:none;">
-    <h1>Benim Sayfam</h1>
+<!-- ÜYE OL -->
+<div class="container" id="register" style="display:none;">
+<div class="card">
+<h1>Üye Ol</h1>
+<input type="email" placeholder="E-mail adresi">
+<button onclick="show('verify')">Kod Gönder</button>
+</div>
+</div>
 
-    <h2>📊 Yatırımlarım</h2>
-    <div class="grid">
-        <div class="box">🟡 Altın</div>
-        <div class="box">⚪ Gümüş</div>
-        <div class="box">📈 Borsa</div>
-        <div class="box">₿ Kripto</div>
-    </div>
+<!-- KOD DOĞRULAMA -->
+<div class="container" id="verify" style="display:none;">
+<div class="card">
+<h1>Kod Doğrulama</h1>
+<input type="text" placeholder="Mailinize gelen kod">
+<button onclick="show('password')">Doğrula</button>
+</div>
+</div>
+
+<!-- ŞİFRE OLUŞTUR -->
+<div class="container" id="password" style="display:none;">
+<div class="card">
+<h1>Şifre Oluştur</h1>
+<input type="password" placeholder="Yeni şifre">
+<button onclick="show('login')">Kaydet</button>
+</div>
+</div>
+
+<!-- ŞİFREMİ UNUTTUM -->
+<div class="container" id="forgot" style="display:none;">
+<div class="card">
+<h1>Şifremi Unuttum</h1>
+<input type="email" placeholder="E-mail adresi">
+<button onclick="show('verify')">Kod Gönder</button>
+</div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="container" id="dashboard" style="display:none;">
+<h1>Benim Sayfam</h1>
+<div class="card">
+<p>📊 Yatırımlarım</p>
+<p>🟡 Altın</p>
+<p>⚪ Gümüş</p>
+<p>📈 Borsa</p>
+<p>₿ Kripto</p>
+</div>
 </div>
 
 <script>
-function login() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    if(email && password) {
-        document.getElementById("login").style.display = "none";
-        document.getElementById("dashboard").style.display = "block";
-    } else {
-        alert("Lütfen e-mail ve şifre girin");
-    }
+function show(id) {
+    document.querySelectorAll('.container').forEach(c => c.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
 }
 </script>
 
