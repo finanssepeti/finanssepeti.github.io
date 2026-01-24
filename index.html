@@ -3,106 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finans Sepeti | Pro Terminal</title>
+    <title>Finans Sepeti | Profesyonel Yatırım Portalı</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root { --p: #1a237e; --s: #00e676; --d: #ff1744; --bg: #f4f7f9; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; }
-        header { background: var(--p); color: white; padding: 20px; text-align: center; }
-        .nav-tabs { background: #fff; display: flex; justify-content: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow-x: auto; }
-        .tab-btn { padding: 15px 20px; border: none; background: none; font-weight: bold; cursor: pointer; color: #555; white-space: nowrap; }
-        .tab-btn.active { color: var(--p); border-bottom: 3px solid var(--p); }
-        .container { padding: 20px; max-width: 1400px; margin: auto; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
-        .page { display: none; } .page.active { display: block; }
-        .price-row { display: flex; justify-content: space-between; padding: 12px; border-bottom: 1px solid #eee; }
-        input, select { padding: 12px; margin: 8px 0; width: 100%; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
-        button { background: var(--p); color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 8px; padding: 12px; margin: 5px 0; }
-        .search-res { position: absolute; width: 100%; background: white; border: 1px solid #ddd; z-index: 100; max-height: 200px; overflow-y: auto; display: none; }
-        .calc-box { background: #e8eaf6; padding: 15px; border-radius: 8px; text-align: center; border: 1px dashed var(--p); color: var(--p); font-weight: bold; }
-        #tradingview_terminal { height: 700px; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; }
-        .chart-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 900px) { .chart-grid { grid-template-columns: 1fr; } }
-        canvas { max-height: 400px; }
+        :root { --p: #0f172a; --s: #10b981; --d: #ef4444; --accent: #3b82f6; --bg: #f8fafc; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; color: #1e293b; }
+        
+        /* Header & Nav */
+        header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; padding: 40px 20px; text-align: center; border-bottom: 4px solid var(--accent); }
+        header h2 { margin: 0; font-size: 1.2rem; opacity: 0.8; letter-spacing: 2px; }
+        header h1 { margin: 10px 0; font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        
+        .nav-tabs { background: white; display: flex; justify-content: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); overflow-x: auto; }
+        .tab-btn { padding: 18px 25px; border: none; background: none; font-weight: 700; cursor: pointer; color: #64748b; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .tab-btn i { font-size: 1.1rem; }
+        .tab-btn.active { color: var(--accent); border-bottom: 4px solid var(--accent); background: #eff6ff; }
+
+        .container { padding: 30px 5%; max-width: 1400px; margin: auto; }
+        .card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-bottom: 25px; border: 1px solid #e2e8f0; }
+        
+        /* Yatırım Ekle Özel */
+        .search-box { position: relative; margin-bottom: 20px; }
+        #search-results { position: absolute; width: 100%; background: white; z-index: 100; border: 1px solid #cbd5e1; max-height: 250px; overflow-y: auto; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; }
+        .search-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: 0.2s; }
+        .search-item:hover { background: #f1f5f9; color: var(--accent); }
+        
+        input, select { padding: 14px; margin: 10px 0; width: 100%; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 1rem; transition: 0.3s; }
+        input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+        
+        .calc-badge { background: #1e293b; color: white; padding: 20px; border-radius: 12px; text-align: center; font-size: 1.2rem; font-weight: 800; margin: 20px 0; border-left: 8px solid var(--s); }
+        
+        /* Haberler */
+        .news-item { padding: 15px; border-bottom: 1px solid #f1f5f9; transition: 0.2s; }
+        .news-item:hover { background: #f8fafc; }
+        .news-date { font-size: 0.8rem; color: #94a3b8; font-weight: 600; }
+        .news-title { display: block; margin: 5px 0; color: #1e293b; font-weight: 700; text-decoration: none; }
+        
+        .page { display: none; animation: fadeIn 0.5s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        #tradingview_terminal { height: 700px; border-radius: 16px; border: 2px solid #e2e8f0; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>FİNANS SEPETİ</h1>
-    <p id="clock">Yükleniyor...</p>
+    <h2>FİNANSAL YATIRIM VE TEKNİK ANALİZ</h2>
+    <h1 id="clock">00:00:00</h1>
+    <p><i class="fas fa-globe"></i> Global Finansal Terminali</p>
 </header>
 
 <div class="nav-tabs">
-    <button class="tab-btn active" onclick="showPage('piyasalar')">Piyasalar</button>
-    <button class="tab-btn" onclick="showPage('yatirim-ekle')">Yatırım Ekle</button>
-    <button class="tab-btn" onclick="showPage('portfoyum')">Portföyüm</button>
-    <button class="tab-btn" onclick="showPage('teknik-analiz')">Teknik Analiz</button>
+    <button class="tab-btn active" onclick="showPage('piyasalar')"><i class="fas fa-chart-line"></i> Piyasalar</button>
+    <button class="tab-btn" onclick="showPage('yatirim-ekle')"><i class="fas fa-plus-circle"></i> Yatırım Ekle</button>
+    <button class="tab-btn" onclick="showPage('portfoyum')"><i class="fas fa-wallet"></i> Portföyüm</button>
+    <button class="tab-btn" onclick="showPage('teknik-analiz')"><i class="fas fa-microchip"></i> Teknik Analiz</button>
+    <button class="tab-btn" onclick="showPage('haberler')"><i class="fas fa-newspaper"></i> Haberler</button>
 </div>
 
 <div class="container">
     
     <div id="piyasalar" class="page active">
         <div class="card">
-            <h3>Canlı Piyasa Takibi</h3>
-            <div id="price-list">Fiyatlar güncelleniyor...</div>
+            <h3><i class="fas fa-broadcast-tower"></i> Canlı Piyasa Takibi</h3>
+            <div id="price-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;"></div>
         </div>
     </div>
 
     <div id="yatirim-ekle" class="page">
-        <div class="card" style="max-width: 500px; margin: auto;">
-            <div style="background: #fff9c4; padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-                <div class="price-row"><span>Altın/TL (Gr):</span> <b id="fix-gold">0.00 TL</b></div>
-                <div class="price-row"><span>Gümüş/TL (Gr):</span> <b id="fix-silver">0.00 TL</b></div>
+        <div class="card" style="max-width: 600px; margin: auto;">
+            <h3><i class="fas fa-search-dollar"></i> Yeni Yatırım Kaydı</h3>
+            <div class="search-box">
+                <input type="text" id="a-search" placeholder="Varlık Ara (BIST Hisseleri, Altın, Kripto...)" onkeyup="search()">
+                <div id="search-results"></div>
             </div>
             
-            <div style="position:relative">
-                <input type="text" id="asset-search" placeholder="Varlık Ara (Arama Butonu)" onkeyup="searchAsset()">
-                <div id="search-results" class="search-res"></div>
-            </div>
-            
-            <div id="sel-info" style="display:none; padding:10px; color:var(--p); font-weight:bold; border: 1px solid #eee; border-radius: 8px; margin-top: 5px;">
-                Seçilen: <span id="sel-n">-</span> | Anlık Fiyat: <span id="sel-p">0.00</span>
+            <div id="sel-info" style="display:none; padding:15px; background: #f0fdf4; border-radius: 10px; margin-bottom: 15px; border: 1px solid #bbf7d0;">
+                <span style="color:#166534">Seçilen: </span> <strong id="sel-n"></strong> 
+                <span style="margin-left:15px; color:#166534">Anlık Fiyat: </span> <strong id="sel-p">0.00</strong>
             </div>
 
-            <input type="number" id="asset-amount" placeholder="Miktar (Adet/Gram)" oninput="doCalc()">
-            <input type="number" id="buy-price" placeholder="Alış Birim Fiyatı" oninput="doCalc()">
-            <div class="calc-box">TOPLAM YATIRIM TUTARI: <span id="total-val">0.00</span></div>
-            <input type="date" id="invest-date">
-            <button onclick="saveInv()" style="width:100%">Portföye Kaydet</button>
+            <input type="number" id="a-amt" placeholder="Miktar (Adet/Gram)" oninput="calc()">
+            <input type="number" id="a-buy" placeholder="Alış Birim Fiyatı" oninput="calc()">
+            
+            <div class="calc-badge">
+                TOPLAM TUTAR: <span id="a-total">0.00</span> ₺
+            </div>
+            
+            <input type="date" id="a-date">
+            <button onclick="save()" style="width:100%; padding:15px; background:var(--accent); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer;">PORTFÖYE EKLE</button>
         </div>
     </div>
 
     <div id="portfoyum" class="page">
         <div class="card">
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <button onclick="exportExcel()" style="background:#2e7d32; flex:1">Excel İndir</button>
-                <button onclick="exportPDF()" style="background:#c62828; flex:1">PDF İndir</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3><i class="fas fa-history"></i> İşlem Geçmişi</h3>
+                <div>
+                    <button onclick="exportExcel()" style="background:#166534; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer;"><i class="fas fa-file-excel"></i> Excel</button>
+                    <button onclick="exportPDF()" style="background:#991b1b; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer;"><i class="fas fa-file-pdf"></i> PDF</button>
+                </div>
             </div>
-            <div style="overflow-x:auto">
+            <div style="overflow-x: auto;">
                 <table id="p-table" style="width:100%; border-collapse: collapse;">
                     <thead>
-                        <tr style="text-align:left; border-bottom: 2px solid #eee;">
-                            <th>Tarih</th><th>Varlık</th><th>Adet</th><th>Alış</th><th>Güncel</th><th>K/Z (TL)</th>
+                        <tr style="background:#f1f5f9; text-align:left;">
+                            <th style="padding:15px;">Tarih</th><th>Varlık</th><th>Adet</th><th>Maliyet</th><th>Güncel</th><th>K/Z (%)</th>
                         </tr>
                     </thead>
                     <tbody id="p-body"></tbody>
                 </table>
             </div>
         </div>
-
-        <div class="chart-grid">
-            <div class="card">
-                <h4>Varlık Dağılımı (Pasta Dilimi)</h4>
-                <canvas id="pieChart"></canvas>
-            </div>
-            <div class="card">
-                <h4>Kâr/Zarar Analizi (Dikey Sütun)</h4>
-                <canvas id="barChart"></canvas>
-            </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="card"><h4>Dağılım</h4><canvas id="pieChart"></canvas></div>
+            <div class="card"><h4>Performans</h4><canvas id="barChart"></canvas></div>
         </div>
     </div>
 
@@ -111,167 +132,153 @@
             <div id="tradingview_terminal"></div>
         </div>
     </div>
+
+    <div id="haberler" class="page">
+        <div class="card">
+            <h3><i class="fas fa-newspaper"></i> Canlı Finans Haberleri (Global & Fed)</h3>
+            <div id="news-list">Haberler yükleniyor...</div>
+        </div>
+    </div>
+
 </div>
 
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
     const API_KEY = '72ce0236fb66434e8feed08c1b2044d2';
-    let currentLiveData = {};
-    let charts = { pie: null, bar: null };
+    let livePrices = {};
+    let charts = {};
 
     function showPage(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         if(event) event.currentTarget.classList.add('active');
-        if(id === 'teknik-analiz') loadTradingView();
-        if(id === 'portfoyum') renderCharts();
+        if(id === 'teknik-analiz') loadTV();
+        if(id === 'haberler') fetchNews();
     }
 
-    // 1. PİYASA VERİLERİ (Gümüş NaN ve Eksik Veri Fix)
-    async function fetchPiyasalar() {
+    // 1. CANLI PİYASA & BIST GÜNCELLEMESİ
+    async function fetchAll() {
         try {
-            const syms = "XAU/USD,XAG/USD,USD/TRY,EUR/TRY,BTC/USD,ETH/USD,XU100,XU030";
+            const syms = "XAU/USD,XAG/USD,USD/TRY,BTC/USD,ETH/USD,XU100,XU030";
             const r = await fetch(`https://api.twelvedata.com/price?symbol=${syms}&apikey=${API_KEY}`);
             const d = await r.json();
             
-            const usd = parseFloat(d['USD/TRY']?.price || 1);
-            const gold_ons = parseFloat(d['XAU/USD']?.price || 0);
-            const silver_ons = parseFloat(d['XAG/USD']?.price) || 32.10; // Yedek veri
-
-            currentLiveData = {
-                "Altın/Ons": "$" + gold_ons.toFixed(2),
-                "Altın/TL (Gr)": ((gold_ons / 31.1) * usd).toFixed(2),
-                "Gümüş/Ons": "$" + silver_ons.toFixed(2),
-                "Gümüş/TL (Gr)": ((silver_ons / 31.1) * usd).toFixed(2),
-                "Dolar/TL": usd.toFixed(4),
-                "Euro/TL": parseFloat(d['EUR/TRY']?.price || 0).toFixed(4),
-                "Btc/Usdt": "$" + parseFloat(d['BTC/USD']?.price || 0).toLocaleString(),
-                "Btc/TL": (parseFloat(d['BTC/USD']?.price || 0) * usd).toLocaleString(),
-                "Etherium/Usdt": "$" + parseFloat(d['ETH/USD']?.price || 0).toLocaleString(),
-                "Etherium/TL": (parseFloat(d['ETH/USD']?.price || 0) * usd).toLocaleString(),
-                "Bist100": d['XU100']?.price || "10,240",
-                "Bist30": d['XU030']?.price || "11,400"
+            const usd = parseFloat(d['USD/TRY'].price);
+            livePrices = {
+                "ALTIN_GR": ((parseFloat(d['XAU/USD'].price) / 31.1) * usd).toFixed(2),
+                "GUMUS_GR": ((parseFloat(d['XAG/USD'].price) / 31.1) * usd).toFixed(2),
+                "USD_TRY": usd.toFixed(4),
+                "BTC_USD": parseFloat(d['BTC/USD'].price).toLocaleString(),
+                "BIST100": d['XU100']?.price || "10250.00"
             };
 
-            document.getElementById('fix-gold').innerText = currentLiveData["Altın/TL (Gr)"] + " TL";
-            document.getElementById('fix-silver').innerText = currentLiveData["Gümüş/TL (Gr)"] + " TL";
-            
             const list = document.getElementById('price-list');
-            list.innerHTML = Object.entries(currentLiveData).map(([n, v]) => 
-                `<div class="price-row"><span>${n}</span><span><b>${v}</b></span></div>`).join('');
-            
-            refreshPortfolioTable();
-        } catch(e) { console.warn("API İstek Limiti doldu."); }
+            list.innerHTML = Object.entries(livePrices).map(([n,v]) => `
+                <div style="background:white; padding:20px; border-radius:12px; border-bottom:4px solid var(--accent); display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:700; color:#475569;">${n.replace('_',' ')}</span>
+                    <span style="font-size:1.2rem; font-weight:800; color:var(--p);">${v}</span>
+                </div>
+            `).join('');
+        } catch(e) {}
     }
 
-    // 2. ARAMA VE YATIRIM EKLEME
-    async function searchAsset() {
-        const q = document.getElementById('asset-search').value;
-        if(q.length < 2) return;
-        const r = await fetch(`https://api.twelvedata.com/symbol_search?symbol=${q}&apikey=${API_KEY}`);
-        const d = await r.json();
+    // 2. AKILLI ARAMA (BIST DAHİL)
+    async function search() {
+        const q = document.getElementById('a-search').value;
         const res = document.getElementById('search-results');
-        res.innerHTML = d.data.slice(0,5).map(i => `<div style="padding:10px; cursor:pointer; border-bottom:1px solid #eee" onclick="selectAsset('${i.symbol}')"><b>${i.symbol}</b> - ${i.instrument_name}</div>`).join('');
+        if(q.length < 2) { res.style.display='none'; return; }
+
+        const r = await fetch(`https://api.twelvedata.com/symbol_search?symbol=${q}&apikey=${API_KEY}`);
+        const data = await r.json();
+        
+        // Tekrarları temizleme
+        const unique = Array.from(new Set(data.data.map(a => a.symbol)))
+            .map(symbol => data.data.find(a => a.symbol === symbol));
+
+        res.innerHTML = unique.slice(0,8).map(i => `
+            <div class="search-item" onclick="selAsset('${i.symbol}')">
+                <strong>${i.symbol}</strong> <span style="font-size:0.8rem; color:#64748b;">(${i.instrument_name})</span>
+            </div>
+        `).join('');
         res.style.display = 'block';
     }
 
-    async function selectAsset(s) {
-        document.getElementById('search-results').style.display = 'none';
-        document.getElementById('asset-search').value = s;
+    async function selAsset(s) {
+        document.getElementById('search-results').style.display='none';
+        document.getElementById('a-search').value = s;
+        
         const r = await fetch(`https://api.twelvedata.com/price?symbol=${s}&apikey=${API_KEY}`);
         const d = await r.json();
         const p = parseFloat(d.price) || 0;
+
         document.getElementById('sel-n').innerText = s;
         document.getElementById('sel-p').innerText = p.toFixed(4);
-        document.getElementById('buy-price').value = p.toFixed(4);
+        document.getElementById('a-buy').value = p.toFixed(4);
         document.getElementById('sel-info').style.display = 'block';
-        doCalc();
+        calc();
     }
 
-    function doCalc() {
-        const a = document.getElementById('asset-amount').value || 0;
-        const b = document.getElementById('buy-price').value || 0;
-        document.getElementById('total-val').innerText = (a * b).toLocaleString() + " TL";
+    // 3. HABERLER (RSS -> JSON API)
+    async function fetchNews() {
+        const list = document.getElementById('news-list');
+        try {
+            // Bloomberg HT veya Reuters tarzı finans haberleri
+            const r = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://www.bloomberght.com/rss`);
+            const d = await r.json();
+            list.innerHTML = d.items.slice(0,10).map(i => `
+                <div class="news-item">
+                    <span class="news-date">${i.pubDate}</span>
+                    <a href="${i.link}" target="_blank" class="news-title">${i.title}</a>
+                </div>
+            `).join('');
+        } catch(e) { list.innerText = "Haberler şu an yüklenemedi."; }
     }
 
-    function saveInv() {
-        const item = { s: document.getElementById('asset-search').value, a: parseFloat(document.getElementById('asset-amount').value), b: parseFloat(document.getElementById('buy-price').value), d: document.getElementById('invest-date').value };
-        let db = JSON.parse(localStorage.getItem('fsepeti_db')) || [];
-        db.push(item);
-        localStorage.setItem('fsepeti_db', JSON.stringify(db));
-        alert("Cüzdana Kaydedildi!");
-        refreshPortfolioTable();
+    function calc() {
+        const a = document.getElementById('a-amt').value || 0;
+        const b = document.getElementById('a-buy').value || 0;
+        document.getElementById('a-total').innerText = (a * b).toLocaleString();
     }
 
-    function refreshPortfolioTable() {
-        const db = JSON.parse(localStorage.getItem('fsepeti_db')) || [];
-        document.getElementById('p-body').innerHTML = db.map(i => {
-            const live = parseFloat(currentLiveData[i.s]) || i.b;
-            const kz = (live - i.b) * i.a;
-            return `<tr><td>${i.d}</td><td>${i.s}</td><td>${i.a}</td><td>${i.b}</td><td>${live.toFixed(2)}</td><td style="color:${kz>=0?'green':'red'}">${kz.toFixed(2)} TL</td></tr>`;
-        }).join('');
+    function save() {
+        const obj = { s: document.getElementById('a-search').value, a: document.getElementById('a-amt').value, b: document.getElementById('a-buy').value, d: document.getElementById('a-date').value };
+        let db = JSON.parse(localStorage.getItem('f_v5')) || [];
+        db.push(obj);
+        localStorage.setItem('f_v5', JSON.stringify(db));
+        alert("Portföy Güncellendi!");
+        renderTable();
     }
 
-    // 3. ANALİZ GRAFİKLERİ (Pasta ve Dikey Bir Arada)
-    function renderCharts() {
-        const db = JSON.parse(localStorage.getItem('fsepeti_db')) || [];
-        const ctxP = document.getElementById('pieChart').getContext('2d');
-        const ctxB = document.getElementById('barChart').getContext('2d');
-
-        if(charts.pie) charts.pie.destroy();
-        if(charts.bar) charts.bar.destroy();
-
-        charts.pie = new Chart(ctxP, {
-            type: 'pie',
-            data: {
-                labels: db.map(i => i.s),
-                datasets: [{ data: db.map(i => i.a), backgroundColor: ['#1a237e','#00e676','#ff1744','#ffeb3b','#9c27b0','#00bcd4'] }]
-            },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
-
-        charts.bar = new Chart(ctxB, {
-            type: 'bar',
-            data: {
-                labels: db.map(i => i.s),
-                datasets: [{ label: 'Net Kâr/Zarar (TL)', data: db.map(i => ((parseFloat(currentLiveData[i.s]) || i.b) - i.b) * i.a), backgroundColor: db.map(i => ((parseFloat(currentLiveData[i.s]) || i.b) - i.b) >= 0 ? '#00e676':'#ff1744') }]
-            },
-            options: { responsive: true, maintainAspectRatio: false }
-        });
+    function renderTable() {
+        const db = JSON.parse(localStorage.getItem('f_v5')) || [];
+        document.getElementById('p-body').innerHTML = db.map(i => `
+            <tr style="border-bottom:1px solid #f1f5f9;">
+                <td style="padding:15px;">${i.d}</td>
+                <td><strong>${i.s}</strong></td>
+                <td>${i.a}</td>
+                <td>${i.b} ₺</td>
+                <td>${(livePrices[i.s] || i.b)} ₺</td>
+                <td style="color:${((livePrices[i.s]||i.b)-i.b) >=0 ? 'var(--s)':'var(--d)'}; font-weight:700;">
+                    %${(((livePrices[i.s]||i.b)-i.b)/i.b*100).toFixed(2)}
+                </td>
+            </tr>
+        `).join('');
     }
 
-    // 4. TEKNİK ANALİZ (TradingView Terminal)
-    function loadTradingView() {
+    function loadTV() {
         new TradingView.widget({
-            "autosize": true, "symbol": "FX:USDTRY", "interval": "D", "timezone": "Europe/Istanbul",
+            "autosize": true, "symbol": "BIST:XU100", "interval": "D", "timezone": "Europe/Istanbul",
             "theme": "light", "style": "1", "locale": "tr", "toolbar_bg": "#f1f3f6",
             "enable_publishing": false, "allow_symbol_change": true, "hide_side_toolbar": false,
-            "withdateranges": true,
             "studies": [ "RSI@tv-basicstudies", "MASimple@tv-basicstudies", "MASimple@tv-basicstudies" ],
             "container_id": "tradingview_terminal"
         });
     }
 
-    function exportExcel() {
-        const db = JSON.parse(localStorage.getItem('fsepeti_db')) || [];
-        const ws = XLSX.utils.json_to_sheet(db);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Portfoy");
-        XLSX.writeFile(wb, "Finans_Sepeti_Portfoy.xlsx");
-    }
-
-    function exportPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.text("Finans Sepeti - Portfoy Raporu", 14, 15);
-        doc.autoTable({ html: '#p-table', startY: 25 });
-        doc.save("Portfoy_Raporu.pdf");
-    }
-
-    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleString(); }, 1000);
-    fetchPiyasalar();
-    setInterval(fetchPiyasalar, 60000);
+    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
+    fetchAll();
+    setInterval(fetchAll, 60000);
 </script>
 </body>
 </html>
