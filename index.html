@@ -19,11 +19,11 @@
         .chart-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; background: #eceff1; padding: 10px; border-radius: 8px; }
         .chart-btn { background: #2c3e50; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 500; }
         .chart-btn:hover { background: #34495e; }
-        #tradingview_terminal { height: 700px; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; }
+        #tradingview_terminal { height: 750px; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; }
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
         .profit { color: var(--s); font-weight: bold; } .loss { color: var(--d); font-weight: bold; }
-        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; width: 100%; box-sizing: border-box; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -34,9 +34,9 @@
 </header>
 
 <div class="nav-tabs">
-    <button class="tab-btn active" onclick="showPage('piyasalar')">Anlık Piyasalar</button>
+    <button class="tab-btn active" onclick="showPage('piyasalar')">Piyasalar</button>
     <button class="tab-btn" onclick="showPage('yatirim-ekle')">Yatırım Ekle</button>
-    <button class="tab-btn" onclick="showPage('portfoy')">Yatırım Portföyüm</button>
+    <button class="tab-btn" onclick="showPage('portfoy')">Portföyüm</button>
     <button class="tab-btn" onclick="showPage('grafik-terminali')">Canlı Grafikler</button>
 </div>
 
@@ -46,7 +46,7 @@
         <div class="card">
             <h3>Canlı Gösterge Paneli</h3>
             <div id="live-prices" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
-                Veriler yükleniyor...
+                Veriler yükleniyor... (TwelveData API limitine takılmış olabilir, lütfen bekleyin)
             </div>
         </div>
     </div>
@@ -54,28 +54,27 @@
     <div id="yatirim-ekle" class="page">
         <div class="card" style="max-width: 500px; margin: auto;">
             <h3>Yeni Yatırım Kaydı</h3>
-            <label>Varlık Seçin:</label>
-            <select id="asset-type" style="width:100%; margin-bottom: 15px;">
+            <label>Varlık Tipi:</label>
+            <select id="asset-type">
                 <option value="XAU/USD">Gram Altın (TL)</option>
                 <option value="XAG/USD">Gram Gümüş (TL)</option>
-                <option value="BTC/USD">Bitcoin (BTC)</option>
-                <option value="BIST:THYAO">THY (Hisse)</option>
-                <option value="BIST:XU100">BIST 100 Endeksi</option>
+                <option value="BTC/USD">Bitcoin (USD)</option>
+                <option value="BIST:THYAO">Hisse Senedi (BIST)</option>
             </select>
             <label>Miktar (Adet/Gram):</label>
-            <input type="number" id="asset-amount" placeholder="Örn: 10.5" style="width:100%; margin-bottom: 15px;">
-            <label>Alış Fiyatı (Birim TL):</label>
-            <input type="number" id="buy-price" placeholder="Örn: 2450.50" style="width:100%; margin-bottom: 15px;">
-            <label>Yatırım Tarihi:</label>
-            <input type="date" id="invest-date" style="width:100%; margin-bottom: 20px;">
-            <button onclick="saveAsset()" style="width:100%; padding:15px; background:var(--p); color:white; border:none; font-weight:bold; border-radius:8px;">Portföyüme Ekle</button>
+            <input type="number" id="asset-amount" placeholder="Örn: 5.40">
+            <label>Alış Birim Fiyatı (TL/USD):</label>
+            <input type="number" id="buy-price" placeholder="Örn: 3050.00">
+            <label>İşlem Tarihi:</label>
+            <input type="date" id="invest-date">
+            <button onclick="saveAsset()" style="width:100%; padding:15px; background:var(--p); color:white; border:none; font-weight:bold; border-radius:8px;">Cüzdanıma Kaydet</button>
         </div>
     </div>
 
     <div id="portfoy" class="page">
         <div class="card">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                <h3>Yatırım Takip Tablosu</h3>
+                <h3>Yatırım Portföyüm</h3>
                 <button onclick="downloadPDF()" style="background:#444; color:white; padding:8px 15px; border:none; border-radius:5px; cursor:pointer;">PDF İndir</button>
             </div>
             <div style="overflow-x: auto;">
@@ -85,10 +84,10 @@
                             <th>Tarih</th>
                             <th>Varlık</th>
                             <th>Adet</th>
-                            <th>Alış Fiyatı</th>
-                            <th>Güncel Fiyat</th>
-                            <th>Toplam Değer</th>
-                            <th>Kâr/Zarar</th>
+                            <th>Alış Birim</th>
+                            <th>Güncel Birim</th>
+                            <th>Toplam Yatırım</th>
+                            <th>Kar/Zarar</th>
                         </tr>
                     </thead>
                     <tbody id="portfolio-body"></tbody>
@@ -99,15 +98,15 @@
 
     <div id="grafik-terminali" class="page">
         <div class="card">
-            <h3>Teknik Analiz Terminali</h3>
+            <h3>Teknik Analiz Terminali (MA50, MA200, RSI Aktif)</h3>
             <div class="chart-controls">
-                <button class="chart-btn" onclick="loadSymbol('FX:USDTRY')">Dolar/TL</button>
-                <button class="chart-btn" onclick="loadSymbol('OANDA:XAUUSD')">Altın (Ons)</button>
-                <button class="chart-btn" onclick="loadSymbol('OANDA:XAGUSD')">Gümüş (Ons)</button>
-                <button class="chart-btn" onclick="loadSymbol('FX_IDC:XAUTRYG')">Altın (TL)</button>
-                <button class="chart-btn" onclick="loadSymbol('FX_IDC:XAGTRYG')">Gümüş (TL)</button>
-                <button class="chart-btn" onclick="loadSymbol('BINANCE:BTCUSDT')">BTC/USDT</button>
-                <button class="chart-btn" onclick="loadSymbol('BIST:XU100')" style="background:#004d40;">BIST 100</button>
+                <button class="chart-btn" onclick="loadSymbol('FX:USDTRY')">1. Dolar/TL</button>
+                <button class="chart-btn" onclick="loadSymbol('OANDA:XAUUSD')">2. Altın/Ons</button>
+                <button class="chart-btn" onclick="loadSymbol('OANDA:XAGUSD')">3. Gümüş/Ons</button>
+                <button class="chart-btn" onclick="loadSymbol('FX_IDC:XAUTRYG')">4. Altın/TL</button>
+                <button class="chart-btn" onclick="loadSymbol('FX_IDC:XAGTRYG')">5. Gümüş/TL</button>
+                <button class="chart-btn" onclick="loadSymbol('BINANCE:BTCUSDT')">6. BTC/USDT</button>
+                <button class="chart-btn" onclick="loadSymbol('BIST:XU100')" style="background:#004d40;">7. BIST100</button>
             </div>
             <div id="tradingview_terminal"></div>
         </div>
@@ -123,7 +122,7 @@
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(event) event.currentTarget.classList.add('active');
+        if(event && event.currentTarget) event.currentTarget.classList.add('active');
         if(id === 'grafik-terminali') loadSymbol('FX:USDTRY');
     }
 
@@ -133,25 +132,28 @@
             const resp = await fetch(`https://api.twelvedata.com/price?symbol=${syms}&apikey=${API_KEY}`);
             const data = await resp.json();
             
-            const usd = parseFloat(data['USD/TRY'].price);
+            const usd = parseFloat(data['USD/TRY']?.price || 1);
             currentPrices = {
-                'XAU/USD': (parseFloat(data['XAU/USD'].price) / 31.10) * usd,
-                'XAG/USD': (parseFloat(data['XAG/USD'].price) / 31.10) * usd,
-                'BTC/USD': parseFloat(data['BTC/USD'].price) * usd,
-                'BIST:THYAO': parseFloat(data['THYAO.IS'].price),
+                'XAU/USD': (parseFloat(data['XAU/USD']?.price || 0) / 31.10) * usd,
+                'XAG/USD': (parseFloat(data['XAG/USD']?.price || 0) / 31.10) * usd,
+                'BTC/USD': parseFloat(data['BTC/USD']?.price || 0) * usd,
+                'BIST:THYAO': parseFloat(data['THYAO.IS']?.price || 0),
                 'USD/TRY': usd
             };
             refreshUI();
-        } catch (e) { console.log("Limit Hatası"); }
+        } catch (e) { console.log("Veri çekme hatası - Limit!"); }
     }
 
     function refreshUI() {
-        document.getElementById('live-prices').innerHTML = `
-            <div class="card" style="text-align:center">Gram Altın<br><b>${currentPrices['XAU/USD'].toFixed(2)} TL</b></div>
-            <div class="card" style="text-align:center">Gram Gümüş<br><b>${currentPrices['XAG/USD'].toFixed(2)} TL</b></div>
-            <div class="card" style="text-align:center">Dolar/TL<br><b>${currentPrices['USD/TRY'].toFixed(2)} TL</b></div>
-            <div class="card" style="text-align:center">BTC/USD<br><b>$${(currentPrices['BTC/USD']/currentPrices['USD/TRY']).toLocaleString()}</b></div>
-        `;
+        const pricesDiv = document.getElementById('live-prices');
+        if(currentPrices['USD/TRY']) {
+            pricesDiv.innerHTML = `
+                <div class="card" style="text-align:center">Gram Altın<br><b>${currentPrices['XAU/USD'].toFixed(2)} TL</b></div>
+                <div class="card" style="text-align:center">Gram Gümüş<br><b>${currentPrices['XAG/USD'].toFixed(2)} TL</b></div>
+                <div class="card" style="text-align:center">Dolar/TL<br><b>${currentPrices['USD/TRY'].toFixed(2)} TL</b></div>
+                <div class="card" style="text-align:center">BTC/TL<br><b>${currentPrices['BTC/USD'].toLocaleString()} TL</b></div>
+            `;
+        }
         renderTable();
     }
 
@@ -162,16 +164,16 @@
             buy: parseFloat(document.getElementById('buy-price').value),
             dt: document.getElementById('invest-date').value
         };
-        if(!item.amt || !item.buy) return alert("Miktar ve Fiyat giriniz!");
-        let myData = JSON.parse(localStorage.getItem('finans_data')) || [];
+        if(!item.amt || !item.buy) return alert("Eksik bilgi!");
+        let myData = JSON.parse(localStorage.getItem('finans_v1')) || [];
         myData.push(item);
-        localStorage.setItem('finans_data', JSON.stringify(myData));
-        alert("Yatırım Kaydedildi!");
+        localStorage.setItem('finans_v1', JSON.stringify(myData));
+        alert("Başarıyla kaydedildi.");
         renderTable();
     }
 
     function renderTable() {
-        const myData = JSON.parse(localStorage.getItem('finans_data')) || [];
+        const myData = JSON.parse(localStorage.getItem('finans_v1')) || [];
         const body = document.getElementById('portfolio-body');
         body.innerHTML = '';
 
@@ -179,15 +181,15 @@
             const live = currentPrices[i.sym] || 0;
             const total = live * i.amt;
             const pl = (live - i.buy) * i.amt;
-            const plPerc = ((live - i.buy) / i.buy) * 100;
+            const plPerc = i.buy > 0 ? ((live - i.buy) / i.buy) * 100 : 0;
 
             body.innerHTML += `
                 <tr>
                     <td>${i.dt}</td>
                     <td>${i.sym}</td>
                     <td>${i.amt}</td>
-                    <td>${i.buy.toFixed(2)} TL</td>
-                    <td>${live.toFixed(2)} TL</td>
+                    <td>${i.buy.toFixed(2)}</td>
+                    <td>${live.toFixed(2)}</td>
                     <td><b>${total.toLocaleString()} TL</b></td>
                     <td class="${pl >= 0 ? 'profit' : 'loss'}">
                         ${pl.toFixed(2)} TL (${plPerc.toFixed(2)}%)
@@ -208,13 +210,13 @@
             "locale": "tr",
             "toolbar_bg": "#f1f3f6",
             "enable_publishing": false,
-            "allow_symbol_change": true, // ARAMA BUTONU BURADA
-            "hide_side_toolbar": false, // ÇİZİM ARAÇLARI BURADA
+            "allow_symbol_change": true, // ARAMA BUTONU AKTİF
+            "hide_side_toolbar": false, // ÇİZİM ARAÇLARI AKTİF
             "withdateranges": true,
             "studies": [
                 "RSI@tv-basicstudies",
-                "MASimple@tv-basicstudies",
-                "MASimple@tv-basicstudies"
+                "MASimple@tv-basicstudies", // MA 1 (Ayarlardan 50 yapılabilir)
+                "MASimple@tv-basicstudies"  // MA 2 (Ayarlardan 200 yapılabilir)
             ],
             "container_id": "tradingview_terminal"
         });
@@ -223,7 +225,7 @@
     function downloadPDF() {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-        doc.text("Finans Sepeti - Portfoy Ozeti", 14, 15);
+        doc.text("Finans Sepeti - Yatirim Portfoyu", 14, 15);
         doc.autoTable({ html: '#portfolio-table', startY: 25 });
         doc.save("yatirimlarim.pdf");
     }
