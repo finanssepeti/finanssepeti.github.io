@@ -17,34 +17,35 @@
         }
 
         body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; color: #444; }
-        header { padding: 30px; text-align: center; background: var(--bg); box-shadow: var(--shadow); border-bottom: 2px solid rgba(255,255,255,0.3); }
-        .nav-tabs { display: flex; justify-content: center; gap: 15px; padding: 20px; position: sticky; top: 0; background: var(--bg); z-index: 1000; }
-        .tab-btn { padding: 12px 25px; border: none; border-radius: 12px; background: var(--bg); box-shadow: var(--shadow); cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        header { padding: 30px; text-align: center; background: var(--bg); box-shadow: var(--shadow); }
+        header h1 { font-weight: 800; font-size: 2rem; color: var(--accent); margin: 10px 0; }
+        
+        .nav-tabs { display: flex; justify-content: center; gap: 15px; padding: 20px; position: sticky; top: 0; background: var(--bg); z-index: 1000; overflow-x: auto; }
+        .tab-btn { padding: 12px 25px; border: none; border-radius: 12px; background: var(--bg); box-shadow: var(--shadow); cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
         .tab-btn.active { box-shadow: var(--inner-shadow); color: var(--accent); }
+
         .container { padding: 20px; max-width: 1400px; margin: auto; }
         .card { background: var(--bg); padding: 25px; border-radius: 20px; box-shadow: var(--shadow); margin-bottom: 20px; }
         .page { display: none; } .page.active { display: block; }
 
-        /* Yatırım Formu */
+        /* Formlar */
         input, select { width: 100%; padding: 15px; margin: 10px 0; border: none; border-radius: 12px; background: var(--bg); box-shadow: var(--inner-shadow); font-size: 1rem; box-sizing: border-box; }
-        .calc-box { background: #1a237e; color: #fff; padding: 25px; border-radius: 15px; text-align: center; font-size: 1.5rem; font-weight: 800; margin: 20px 0; border-left: 10px solid #00e676; }
+        .calc-box { background: var(--accent); color: #fff; padding: 25px; border-radius: 15px; text-align: center; font-size: 1.5rem; font-weight: 800; margin: 20px 0; border-left: 10px solid #00e676; }
         
-        /* Arama Sonuçları Paneli */
-        #search-results { background: var(--bg); box-shadow: var(--shadow); border-radius: 12px; margin-top: 5px; max-height: 200px; overflow-y: auto; display: none; }
+        /* Arama */
+        #search-results { background: var(--bg); box-shadow: var(--shadow); border-radius: 12px; margin-top: 5px; max-height: 200px; overflow-y: auto; display: none; position: absolute; width: 100%; z-index: 100; }
         .search-item { padding: 12px; cursor: pointer; border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .search-item:hover { background: rgba(26, 35, 126, 0.1); }
-        
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #ccc; }
-        .btn-excel { background: #10b981; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; margin-bottom: 15px; }
+
+        #tv_chart_container { height: 750px; border-radius: 20px; overflow: hidden; box-shadow: var(--shadow); }
+        .price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+        .news-card { padding: 15px; border-radius: 12px; box-shadow: var(--shadow); margin-bottom: 15px; background: var(--bg); }
     </style>
 </head>
 <body>
 
 <header>
-    <h3 style="letter-spacing: 2px; opacity: 0.7;">FİNANSAL YATIRIM VE TEKNİK ANALİZ</h3>
+    <h3 style="letter-spacing: 2px; opacity: 0.7; font-size: 0.9rem;">FİNANSAL YATIRIM VE TEKNİK ANALİZ</h3>
     <h1 id="clock">00:00:00</h1>
-    <div style="font-size: 0.8rem; font-weight: 600;"><i class="fas fa-globe"></i> Canlı Veri & Haber Terminali</div>
 </header>
 
 <div class="nav-tabs">
@@ -56,65 +57,42 @@
 </div>
 
 <div class="container">
-    
     <div id="piyasalar" class="page active">
-        <div class="card" id="price-list" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:20px;">
-            Yükleniyor...
-        </div>
+        <div class="card price-grid" id="price-list">Yükleniyor...</div>
     </div>
 
     <div id="yatirim-ekle" class="page">
         <div class="card" style="max-width: 600px; margin: auto;">
-            <h3><i class="fas fa-calculator"></i> Yatırım Hesaplama</h3>
-            
-            <label>Varlık Tipi:</label>
-            <select id="asset-type" onchange="toggleManualSearch()">
-                <option value="XAUUSD">Altın (Ons)</option>
-                <option value="GRAM_ALTIN">Altın (TL/Gram)</option>
-                <option value="XAGUSD">Gümüş (Ons)</option>
-                <option value="GRAM_GUMUS">Gümüş (TL/Gram)</option>
-                <option value="BTCUSDT">Bitcoin (BTC)</option>
-                <option value="USDTRY">Dolar/TL</option>
-                <option value="CUSTOM">Özel (Hisse/Koin Ara)</option>
-            </select>
-            
-            <div id="manual-search-area" style="display:none; position:relative;">
-                <input type="text" id="a-search" placeholder="Hisse veya Koin Adı Yazın..." onkeyup="searchGlobal()">
+            <h3><i class="fas fa-search-dollar"></i> Varlık Arama ve Kayıt</h3>
+            <div style="position:relative;">
+                <input type="text" id="a-search" placeholder="Hisse (EREGL), Kripto (BTC) veya Altın ara..." onkeyup="searchGlobal()">
                 <div id="search-results"></div>
             </div>
-
-            <div id="sel-badge" style="display:none; padding:15px; background: #fff; border-radius: 12px; margin: 10px 0; text-align: center; border: 1px solid #ddd;">
-                Varlık: <strong id="sel-name">-</strong> | Güncel: <strong id="sel-price">0.00</strong>
+            <div id="sel-badge" style="display:none; padding:15px; background: #fff; border-radius: 12px; margin: 15px 0; text-align: center; border: 1px solid #ddd;">
+                Seçilen: <strong id="sel-name">-</strong> | Birim Fiyat: <strong id="sel-price">0.00</strong>
             </div>
-
-            <input type="number" id="asset-qty" placeholder="Miktar (Adet/Gram)" oninput="recalc()">
-            <input type="number" id="asset-price" placeholder="Birim Alış Fiyatınız" oninput="recalc()">
-            
-            <div class="calc-box">
-                TOPLAM YATIRIM: <span id="total-val">0.00</span> ₺
-            </div>
-            
+            <input type="number" id="a-qty" placeholder="Miktar (Adet/Gram)" oninput="recalc()">
+            <input type="number" id="a-buy" placeholder="Alış Birim Fiyatı" oninput="recalc()">
+            <div class="calc-box">TOPLAM YATIRIM: <span id="total-val">0.00</span> ₺</div>
             <input type="date" id="invest-date">
-            <button onclick="saveInv()" style="width:100%; padding:15px; background:var(--accent); color:white; border:none; border-radius:12px; font-weight:bold; cursor:pointer;">CÜZDANA KAYDET</button>
+            <button onclick="saveInv()" style="width:100%; padding:15px; background:var(--accent); color:white; border:none; border-radius:12px; font-weight:bold; cursor:pointer;">PORTFÖYE KAYDET</button>
         </div>
     </div>
 
     <div id="portfoyum" class="page">
         <div class="card">
-            <button class="btn-excel" onclick="exportExcel()"><i class="fas fa-file-excel"></i> Excel Olarak İndir</button>
-            <div style="overflow-x: auto;">
-                <table id="p-table">
-                    <thead>
-                        <tr><th>Tarih</th><th>Varlık</th><th>Miktar</th><th>Maliyet</th><th>Toplam</th></tr>
-                    </thead>
-                    <tbody id="p-body"></tbody>
-                </table>
-            </div>
+            <button onclick="exportExcel()" style="background:#10b981; color:white; padding:10px; border:none; border-radius:8px; cursor:pointer; font-weight:bold;"><i class="fas fa-file-excel"></i> Excel İndir</button>
+            <div style="overflow-x: auto;"><table style="width:100%; border-collapse: collapse; margin-top:10px;"><thead><tr style="text-align:left;"><th>Tarih</th><th>Varlık</th><th>Miktar</th><th>Maliyet</th><th>Toplam</th></tr></thead><tbody id="p-body"></tbody></table></div>
         </div>
     </div>
 
-    <div id="teknik-analiz" class="page"><div class="card" id="tv_container" style="height:600px;"></div></div>
-    <div id="haberler" class="page"><div class="card" id="news-list"></div></div>
+    <div id="teknik-analiz" class="page">
+        <div class="card" id="tv_chart_container"></div>
+    </div>
+
+    <div id="haberler" class="page">
+        <div class="card" id="news-list">Haberler yükleniyor...</div>
+    </div>
 </div>
 
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
@@ -130,40 +108,28 @@
         if(id === 'haberler') fetchNews();
     }
 
-    // PİYASA VERİLERİ ÇEKME
+    // PİYASALAR (Tam Liste)
     async function syncPrices() {
+        const syms = "XAU/USD,XAG/USD,USD/TRY,EUR/TRY,BTC/USD,ETH/USD,XU100,XU030";
         try {
-            const syms = "XAU/USD,XAG/USD,USD/TRY,BTC/USD";
             const r = await fetch(`https://api.twelvedata.com/price?symbol=${syms}&apikey=${API_KEY}`);
             const d = await r.json();
             const usd = parseFloat(d['USD/TRY'].price);
             livePrices = {
-                "GRAM_ALTIN": ((parseFloat(d['XAU/USD'].price) / 31.1) * usd).toFixed(2),
-                "GRAM_GUMUS": ((parseFloat(d['XAG/USD']?.price || 32.5) / 31.1) * usd).toFixed(2),
-                "USD_TRY": usd.toFixed(4),
-                "BTC_USD": parseFloat(d['BTC/USD'].price).toFixed(2)
+                "Altın/TL (Gr)": ((parseFloat(d['XAU/USD'].price) / 31.1) * usd).toFixed(2),
+                "Altın/Ons": "$" + parseFloat(d['XAU/USD'].price).toFixed(2),
+                "Gümüş/TL (Gr)": ((parseFloat(d['XAG/USD']?.price || 32) / 31.1) * usd).toFixed(2),
+                "Gümüş/Ons": "$" + parseFloat(d['XAG/USD']?.price || 32).toFixed(2),
+                "Dolar/TL": usd.toFixed(4),
+                "Euro/TL": parseFloat(d['EUR/TRY'].price).toFixed(4),
+                "BIST 100": parseFloat(d['XU100']?.price || 10250).toLocaleString(),
+                "BTC/USD": "$" + parseFloat(d['BTC/USD'].price).toLocaleString()
             };
-            renderPrices();
+            document.getElementById('price-list').innerHTML = Object.entries(livePrices).map(([n,v]) => `<div class="card" style="margin:0; text-align:center;">${n}<br><b>${v}</b></div>`).join('');
         } catch(e) {}
     }
 
-    function renderPrices() {
-        const list = document.getElementById('price-list');
-        list.innerHTML = Object.entries(livePrices).map(([n,v]) => `
-            <div class="card" style="text-align:center; margin:0;">
-                <small>${n.replace('_',' ')}</small><br><strong>${v}</strong>
-            </div>
-        `).join('');
-    }
-
-    // YATIRIM EKLEME FONKSİYONLARI
-    function toggleManualSearch() {
-        const type = document.getElementById('asset-type').value;
-        const area = document.getElementById('manual-search-area');
-        area.style.display = (type === 'CUSTOM') ? 'block' : 'none';
-        document.getElementById('sel-badge').style.display = 'none';
-    }
-
+    // AKILLI ARAMA & FİYAT ÇEKME (BIST FORMATI DAHİL)
     async function searchGlobal() {
         const q = document.getElementById('a-search').value;
         const res = document.getElementById('search-results');
@@ -177,57 +143,76 @@
     async function selAsset(s) {
         document.getElementById('search-results').style.display='none';
         document.getElementById('a-search').value = s;
-        // BIST hisseleri için .IS otomatik ekle
-        let sym = s.includes(".") || s.includes("/") ? s : s + ".IS";
+        // BIST ise .IS ekle, aksi halde sembolü kullan
+        let sym = (s.includes(".") || s.includes("/")) ? s : s + ".IS";
         const r = await fetch(`https://api.twelvedata.com/price?symbol=${sym}&apikey=${API_KEY}`);
         const d = await r.json();
         const p = parseFloat(d.price) || 0;
         
         document.getElementById('sel-name').innerText = s;
         document.getElementById('sel-price').innerText = p.toFixed(4);
-        document.getElementById('asset-price').value = p.toFixed(4);
+        document.getElementById('a-buy').value = p.toFixed(4); // Birim fiyata otomatik yaz
         document.getElementById('sel-badge').style.display = 'block';
-        recalc();
+        recalc(); // Otomatik hesapla
     }
 
     function recalc() {
-        const q = parseFloat(document.getElementById('asset-qty').value) || 0;
-        const p = parseFloat(document.getElementById('asset-price').value) || 0;
+        const q = parseFloat(document.getElementById('a-qty').value) || 0;
+        const p = parseFloat(document.getElementById('a-buy').value) || 0;
         document.getElementById('total-val').innerText = (q * p).toLocaleString('tr-TR', {minimumFractionDigits: 2});
     }
 
+    // TEKNİK ANALİZ (Tam Yetkili Trade Görünümü)
+    function loadTV() {
+        new TradingView.widget({
+            "autosize": true, "symbol": "BIST:XU100", "interval": "D", "timezone": "Europe/Istanbul",
+            "theme": "light", "style": "1", "locale": "tr", "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false, "allow_symbol_change": true, "hide_side_toolbar": false,
+            "container_id": "tv_chart_container", "withdateranges": true,
+            "studies": ["RSI@tv-basicstudies", "MASimple@tv-basicstudies", "MASimple@tv-basicstudies"]
+        });
+    }
+
+    // HABERLER (RSS)
+    async function fetchNews() {
+        const newsList = document.getElementById('news-list');
+        try {
+            const r = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://www.bloomberght.com/rss`);
+            const d = await r.json();
+            newsList.innerHTML = d.items.slice(0,10).map(i => `
+                <div class="news-card">
+                    <small>${i.pubDate}</small><br>
+                    <a href="${i.link}" target="_blank" style="text-decoration:none; color:var(--accent); font-weight:bold;">${i.title}</a>
+                </div>
+            `).join('');
+        } catch(e) { newsList.innerText = "Haber akışı şu an meşgul."; }
+    }
+
     function saveInv() {
-        const o = {
-            d: document.getElementById('invest-date').value,
-            s: document.getElementById('asset-type').value === 'CUSTOM' ? document.getElementById('a-search').value : document.getElementById('asset-type').value,
-            q: document.getElementById('asset-qty').value,
-            p: document.getElementById('asset-price').value
-        };
-        let db = JSON.parse(localStorage.getItem('f_final')) || [];
-        db.push(o);
-        localStorage.setItem('f_final', JSON.stringify(db));
+        const obj = { d: document.getElementById('invest-date').value, s: document.getElementById('a-search').value, q: document.getElementById('a-qty').value, p: document.getElementById('a-buy').value };
+        let db = JSON.parse(localStorage.getItem('fs_vFinal')) || [];
+        db.push(obj);
+        localStorage.setItem('fs_vFinal', JSON.stringify(db));
         alert("Portföye Kaydedildi!");
         renderTable();
     }
 
     function renderTable() {
-        const db = JSON.parse(localStorage.getItem('f_final')) || [];
-        document.getElementById('p-body').innerHTML = db.map(i => `
-            <tr><td>${i.d}</td><td>${i.s}</td><td>${i.q}</td><td>${i.p}</td><td>${(i.q*i.p).toFixed(2)}</td></tr>
-        `).join('');
+        const db = JSON.parse(localStorage.getItem('fs_vFinal')) || [];
+        document.getElementById('p-body').innerHTML = db.map(i => `<tr><td>${i.d}</td><td>${i.s}</td><td>${i.q}</td><td>${i.p}</td><td>${(i.q*i.p).toFixed(2)}</td></tr>`).join('');
     }
 
-    // EXCEL İNDİRME
     function exportExcel() {
-        const db = JSON.parse(localStorage.getItem('f_final')) || [];
+        const db = JSON.parse(localStorage.getItem('fs_vFinal')) || [];
         const ws = XLSX.utils.json_to_sheet(db);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "Yatirimlarim");
-        XLSX.writeFile(wb, "Finans_Sepeti_Portfoy.xlsx");
+        XLSX.utils.book_append_sheet(wb, ws, "Portfoy");
+        XLSX.writeFile(wb, "Portfoyum.xlsx");
     }
 
     setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
     syncPrices();
+    setInterval(syncPrices, 60000);
     renderTable();
 </script>
 </body>
