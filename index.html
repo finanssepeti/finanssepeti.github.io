@@ -1,101 +1,155 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<title>Finans Sepeti</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-    body {
-        margin: 0;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-        color: #fff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-    }
-    .container {
-        width: 100%;
-        max-width: 400px;
-        padding: 20px;
-    }
-    .card {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 30px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-        border: 1px solid rgba(255,255,255,0.1);
-    }
-    h2 { text-align: center; margin-bottom: 25px; }
-    input {
-        width: 100%;
-        padding: 12px;
-        margin: 10px 0;
-        border-radius: 8px;
-        border: 1px solid rgba(255,255,255,0.2);
-        background: rgba(255,255,255,0.05);
-        color: white;
-        box-sizing: border-box;
-    }
-    button {
-        width: 100%;
-        padding: 14px;
-        margin-top: 15px;
-        border-radius: 8px;
-        border: none;
-        background: #00c6ff;
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-    button:hover { background: #0072ff; }
-    .link { text-align: center; margin-top: 20px; font-size: 14px; }
-    .link span { color: #00c6ff; cursor: pointer; text-decoration: underline; margin: 0 5px; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finans Sepeti - Yatırımlarım</title>
+    <style>
+        :root { --accent: #00c6ff; --bg: #0f2027; --card-bg: rgba(255, 255, 255, 0.08); }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; display: flex; justify-content: center; min-height: 100vh; }
+        .container { width: 100%; max-width: 480px; padding: 15px; }
+        .card { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        h2, h3 { text-align: center; margin-top: 0; color: var(--accent); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: none; background: rgba(255,255,255,0.15); color: white; box-sizing: border-box; outline: none; }
+        button { width: 100%; padding: 14px; background: var(--accent); border: none; border-radius: 10px; font-weight: bold; color: white; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #0072ff; transform: translateY(-2px); }
+        
+        .tablo-baslik { font-size: 1.1em; border-bottom: 2px solid var(--accent); padding-bottom: 5px; margin-bottom: 15px; }
+        .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .data-table th { text-align: left; opacity: 0.7; padding-bottom: 10px; }
+        .data-table td { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .calc-input { width: 70px !important; padding: 6px !important; margin: 0 !important; text-align: center; }
+        .total-val { font-weight: bold; color: #00ff88; text-align: right; }
+        .price-val { font-weight: 500; }
+    </style>
 </head>
 <body>
 
-<div class="container" id="login">
-    <div class="card">
+<div class="container">
+    <div id="login-page" class="card">
         <h2>Finans Sepeti</h2>
-        <input type="email" placeholder="E-mail">
-        <input type="password" placeholder="Şifre">
-        <button type="button" onclick="show('dashboard')">Giriş Yap</button>
-        <div class="link">
-            <span onclick="show('register')">Üye Ol</span> | 
-            <span onclick="show('forgot')">Şifremi Unuttum</span>
+        <input type="email" id="l-email" placeholder="E-mail Adresiniz">
+        <input type="password" id="l-pass" placeholder="Şifreniz">
+        <button onclick="showPage('dashboard-page')">Giriş Yap</button>
+        <p style="text-align:center; font-size: 14px;">Hesabınız yok mu? <span style="color:var(--accent); cursor:pointer" onclick="showPage('register-page')">Üye Ol</span></p>
+    </div>
+
+    <div id="register-page" class="card" style="display:none;">
+        <h2>Yeni Üyelik</h2>
+        <input type="email" placeholder="E-mail Adresi Girin">
+        <input type="password" placeholder="Şifre Oluşturun">
+        <button onclick="showPage('login-page')">Kaydet ve Devam Et</button>
+        <p style="text-align:center" onclick="showPage('login-page')">Geri Dön</p>
+    </div>
+
+    <div id="dashboard-page" style="display:none;">
+        <div class="card">
+            <h3>👤 Profilim</h3>
+            <div class="tablo-baslik">📊 Yatırımlarım</div>
+            <p style="font-size: 12px; text-align: center; opacity: 0.6;">Fiyatlar anlık olarak güncellenmektedir.</p>
         </div>
-    </div>
-</div>
 
-<div class="container" id="register" style="display:none;">
-    <div class="card">
-        <h2>Üye Ol</h2>
-        <input type="email" placeholder="E-mail">
-        <button type="button" onclick="show('verify')">Kod Gönder</button>
-        <div class="link"><span onclick="show('login')">Geri Dön</span></div>
-    </div>
-</div>
+        <div class="card">
+            <div class="tablo-baslik">₿ Kripto (İlk 15)</div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Varlık</th>
+                        <th>Fiyat ($)</th>
+                        <th>Adet</th>
+                        <th style="text-align:right">Toplam</th>
+                    </tr>
+                </thead>
+                <tbody id="crypto-body">
+                    </tbody>
+            </table>
+        </div>
 
-<div class="container" id="dashboard" style="display:none;">
-    <div class="card">
-        <h2>Benim Sayfam</h2>
-        <p>🟡 Altın</p>
-        <p>⚪ Gümüş</p>
-        <p>📈 Borsa</p>
-        <p>₿ Kripto</p>
-        <button onclick="show('login')">Çıkış Yap</button>
+        <div class="card">
+            <div class="tablo-baslik">✨ Altın & Döviz</div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Varlık</th>
+                        <th>Fiyat (₺)</th>
+                        <th>Gr/Adet</th>
+                        <th style="text-align:right">Toplam</th>
+                    </tr>
+                </thead>
+                <tbody id="metal-body">
+                    </tbody>
+            </table>
+        </div>
+        
+        <button onclick="location.reload()" style="background: #ff4b2b;">Güvenli Çıkış</button>
     </div>
 </div>
 
 <script>
-function show(id){
-    document.querySelectorAll('.container').forEach(e => e.style.display = 'none');
-    document.getElementById(id).style.display = 'block';
-}
+    // Sayfa değiştirme fonksiyonu
+    function showPage(id) {
+        document.querySelectorAll('.card, #dashboard-page').forEach(el => el.style.display = 'none');
+        document.getElementById(id).style.display = 'block';
+        if(id === 'dashboard-page') { 
+            startLiveUpdates();
+        }
+    }
+
+    // Hesaplama Motoru
+    function calculate(input, price, targetId, symbol) {
+        const qty = parseFloat(input.value) || 0;
+        const total = qty * price;
+        document.getElementById(targetId).innerText = total.toLocaleString(undefined, {minimumFractionDigits: 2}) + " " + symbol;
+    }
+
+    // Canlı Kripto Verileri (Binance API)
+    async function fetchCrypto() {
+        try {
+            const res = await fetch('https://api.binance.com/api/v3/ticker/price');
+            const data = await res.json();
+            const list = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'ADAUSDT', 'AVAXUSDT', 'DOGEUSDT', 'DOTUSDT', 'TRXUSDT', 'LINKUSDT', 'MATICUSDT', 'SHIBUSDT', 'LTCUSDT', 'NEARUSDT'];
+            
+            let html = '';
+            data.filter(i => list.includes(i.symbol)).forEach(coin => {
+                const name = coin.symbol.replace('USDT', '');
+                const price = parseFloat(coin.price);
+                html += `<tr>
+                    <td><b>${name}</b></td>
+                    <td class="price-val">${price < 1 ? price.toFixed(4) : price.toFixed(2)}</td>
+                    <td><input type="number" class="calc-input" placeholder="0" oninput="calculate(this, ${price}, 'total-${name}', '$')"></td>
+                    <td class="total-val" id="total-${name}">0.00 $</td>
+                </tr>`;
+            });
+            document.getElementById('crypto-body').innerHTML = html;
+        } catch (err) { console.error("Kripto çekilemedi"); }
+    }
+
+    // Altın ve Döviz Verileri (Temsili Canlı - Gerçek API anahtarı olmadan simüle edilmiştir)
+    function fetchMetals() {
+        const metals = [
+            {n: 'Ons Altın', p: 2025.40, s: '$'},
+            {n: 'Gram Altın', p: 3045.20, s: '₺'},
+            {n: 'Çeyrek Altın', p: 5120.00, s: '₺'},
+            {n: 'Gümüş (Gr)', p: 38.45, s: '₺'}
+        ];
+        let html = '';
+        metals.forEach(m => {
+            html += `<tr>
+                <td><b>${m.n}</b></td>
+                <td class="price-val">${m.p.toFixed(2)}</td>
+                <td><input type="number" class="calc-input" placeholder="0" oninput="calculate(this, ${m.p}, 'total-${m.n}', '${m.s}')"></td>
+                <td class="total-val" id="total-${m.n}">0.00 ${m.s}</td>
+            </tr>`;
+        });
+        document.getElementById('metal-body').innerHTML = html;
+    }
+
+    function startLiveUpdates() {
+        fetchCrypto();
+        fetchMetals();
+        setInterval(fetchCrypto, 30000); // 30 saniyede bir güncelle
+    }
 </script>
+
 </body>
 </html>
