@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Finans Sepeti</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+}
+
+/* Ortak alan */
+.container {
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Giriş kartı */
+.card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* Başlık */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Inputlar */
+input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+/* Buton */
+button {
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 8px;
+    background: #00c6ff;
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Yatırım kartları */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.box {
+    background: rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    font-size: 18px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- GİRİŞ EKRANI -->
+<div class="container" id="login">
+    <div class="card">
+        <h1>Finans Sepeti</h1>
+        <input type="email" id="email" placeholder="E-mail adresi">
+        <input type="password" id="password" placeholder="Şifre">
+        <button onclick="login()">Giriş Yap</button>
+    </div>
+</div>
+
+<!-- ANA SAYFA -->
+<div class="container" id="dashboard" style="display:none;">
+    <h1>Benim Sayfam</h1>
+
+    <h2>📊 Yatırımlarım</h2>
+    <div class="grid">
+        <div class="box">🟡 Altın</div>
+        <div class="box">⚪ Gümüş</div>
+        <div class="box">📈 Borsa</div>
+        <div class="box">₿ Kripto</div>
+    </div>
+</div>
+
+<script>
+function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if(email && password) {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("dashboard").style.display = "block";
+    } else {
+        alert("Lütfen e-mail ve şifre girin
