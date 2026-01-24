@@ -3,60 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finans Sepeti | Profesyonel Yatırım Portalı</title>
+    <title>Finans Sepeti | Global Terminal</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root { --p: #0f172a; --s: #10b981; --d: #ef4444; --accent: #3b82f6; --bg: #f8fafc; }
+        :root { --p: #0f172a; --s: #10b981; --d: #ef4444; --accent: #3b82f6; --bg: #f1f5f9; }
         body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; color: #1e293b; }
         
-        /* Header & Nav */
-        header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; padding: 40px 20px; text-align: center; border-bottom: 4px solid var(--accent); }
-        header h2 { margin: 0; font-size: 1.2rem; opacity: 0.8; letter-spacing: 2px; }
-        header h1 { margin: 10px 0; font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        
-        .nav-tabs { background: white; display: flex; justify-content: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); overflow-x: auto; }
-        .tab-btn { padding: 18px 25px; border: none; background: none; font-weight: 700; cursor: pointer; color: #64748b; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
-        .tab-btn i { font-size: 1.1rem; }
-        .tab-btn.active { color: var(--accent); border-bottom: 4px solid var(--accent); background: #eff6ff; }
+        header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid var(--accent); }
+        header h3 { margin: 0; font-size: 1.1rem; opacity: 0.9; letter-spacing: 2px; font-weight: 400; }
+        header h1 { margin: 12px 0; font-size: 2.5rem; text-shadow: 2px 2px 5px rgba(0,0,0,0.3); }
 
-        .container { padding: 30px 5%; max-width: 1400px; margin: auto; }
-        .card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); margin-bottom: 25px; border: 1px solid #e2e8f0; }
+        .nav-tabs { background: white; display: flex; justify-content: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow-x: auto; }
+        .tab-btn { padding: 20px 25px; border: none; background: none; font-weight: 700; cursor: pointer; color: #64748b; transition: 0.3s; display: flex; align-items: center; gap: 10px; font-size: 0.95rem; }
+        .tab-btn i { font-size: 1.2rem; }
+        .tab-btn.active { color: var(--accent); border-bottom: 4px solid var(--accent); background: #f8fafc; }
+
+        .container { padding: 30px; max-width: 1500px; margin: auto; }
+        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.03); margin-bottom: 30px; border: 1px solid #e2e8f0; }
         
-        /* Yatırım Ekle Özel */
-        .search-box { position: relative; margin-bottom: 20px; }
-        #search-results { position: absolute; width: 100%; background: white; z-index: 100; border: 1px solid #cbd5e1; max-height: 250px; overflow-y: auto; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); display: none; }
-        .search-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f1f5f9; transition: 0.2s; }
-        .search-item:hover { background: #f1f5f9; color: var(--accent); }
+        .price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+        .price-card { background: #fff; padding: 25px; border-radius: 15px; border-top: 4px solid var(--accent); text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .price-card h4 { margin: 0; color: #64748b; font-size: 0.9rem; text-transform: uppercase; }
+        .price-card div { font-size: 1.5rem; font-weight: 800; margin-top: 10px; color: var(--p); }
+
+        /* Arama & Formlar */
+        .search-wrapper { position: relative; }
+        #search-results { position: absolute; width: 100%; background: white; z-index: 100; border: 1px solid #cbd5e1; max-height: 280px; overflow-y: auto; border-radius: 12px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); display: none; margin-top: 5px; }
+        .search-item { padding: 15px; cursor: pointer; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; }
+        .search-item:hover { background: #f8fafc; color: var(--accent); }
         
-        input, select { padding: 14px; margin: 10px 0; width: 100%; border-radius: 10px; border: 2px solid #e2e8f0; font-size: 1rem; transition: 0.3s; }
-        input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+        input { padding: 15px; margin: 10px 0; width: 100%; border-radius: 12px; border: 2px solid #e2e8f0; font-size: 1rem; box-sizing: border-box; transition: 0.3s; }
+        input:focus { border-color: var(--accent); outline: none; }
+        .calc-box { background: var(--p); color: white; padding: 25px; border-radius: 15px; text-align: center; font-size: 1.4rem; font-weight: 800; margin: 20px 0; border-right: 10px solid var(--s); }
         
-        .calc-badge { background: #1e293b; color: white; padding: 20px; border-radius: 12px; text-align: center; font-size: 1.2rem; font-weight: 800; margin: 20px 0; border-left: 8px solid var(--s); }
-        
-        /* Haberler */
-        .news-item { padding: 15px; border-bottom: 1px solid #f1f5f9; transition: 0.2s; }
-        .news-item:hover { background: #f8fafc; }
-        .news-date { font-size: 0.8rem; color: #94a3b8; font-weight: 600; }
-        .news-title { display: block; margin: 5px 0; color: #1e293b; font-weight: 700; text-decoration: none; }
-        
-        .page { display: none; animation: fadeIn 0.5s ease; }
+        .news-item { padding: 20px; border-bottom: 1px solid #f1f5f9; position: relative; }
+        .news-item:hover { background: #fcfcfc; }
+        .news-title { display: block; color: var(--p); font-weight: 700; text-decoration: none; margin-bottom: 8px; font-size: 1.1rem; }
+        .news-date { font-size: 0.8rem; color: var(--accent); font-weight: bold; text-transform: uppercase; }
+
+        .page { display: none; animation: slideUp 0.4s ease-out; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
-        #tradingview_terminal { height: 700px; border-radius: 16px; border: 2px solid #e2e8f0; }
+        #tv_terminal_container { height: 750px; border-radius: 20px; overflow: hidden; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
 
 <header>
-    <h2>FİNANSAL YATIRIM VE TEKNİK ANALİZ</h2>
+    <h3>FİNANSAL YATIRIM VE TEKNİK ANALİZ</h3>
     <h1 id="clock">00:00:00</h1>
-    <p><i class="fas fa-globe"></i> Global Finansal Terminali</p>
+    <div style="opacity: 0.8; font-weight: 500;"><i class="fas fa-satellite"></i> CANLI VERİ VE HABER TERMİNALİ</div>
 </header>
 
 <div class="nav-tabs">
@@ -70,83 +70,71 @@
 <div class="container">
     
     <div id="piyasalar" class="page active">
-        <div class="card">
-            <h3><i class="fas fa-broadcast-tower"></i> Canlı Piyasa Takibi</h3>
-            <div id="price-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;"></div>
-        </div>
+        <div class="price-grid" id="price-list">Veriler senkronize ediliyor...</div>
     </div>
 
     <div id="yatirim-ekle" class="page">
         <div class="card" style="max-width: 600px; margin: auto;">
-            <h3><i class="fas fa-search-dollar"></i> Yeni Yatırım Kaydı</h3>
-            <div class="search-box">
-                <input type="text" id="a-search" placeholder="Varlık Ara (BIST Hisseleri, Altın, Kripto...)" onkeyup="search()">
+            <h3 style="margin-top:0"><i class="fas fa-magnifying-glass-chart"></i> Akıllı Varlık Arama</h3>
+            <div class="search-wrapper">
+                <input type="text" id="a-search" placeholder="Hisse (EREGL), Kripto (BTC) veya Altın ara..." onkeyup="search()">
                 <div id="search-results"></div>
             </div>
             
-            <div id="sel-info" style="display:none; padding:15px; background: #f0fdf4; border-radius: 10px; margin-bottom: 15px; border: 1px solid #bbf7d0;">
-                <span style="color:#166534">Seçilen: </span> <strong id="sel-n"></strong> 
-                <span style="margin-left:15px; color:#166534">Anlık Fiyat: </span> <strong id="sel-p">0.00</strong>
+            <div id="sel-info" style="display:none; padding:20px; background: #f0f9ff; border-radius: 12px; margin: 15px 0; border: 1px solid #bae6fd;">
+                <div style="display:flex; justify-content:space-between">
+                    <span>Varlık: <strong id="sel-n"></strong></span>
+                    <span>Anlık: <strong id="sel-p" style="color:var(--accent)">0.00</strong></span>
+                </div>
             </div>
 
-            <input type="number" id="a-amt" placeholder="Miktar (Adet/Gram)" oninput="calc()">
-            <input type="number" id="a-buy" placeholder="Alış Birim Fiyatı" oninput="calc()">
+            <input type="number" id="a-amt" placeholder="Miktar (Adet / Gram)" oninput="calc()">
+            <input type="number" id="a-buy" placeholder="Alış Birim Fiyatınız" oninput="calc()">
             
-            <div class="calc-badge">
-                TOPLAM TUTAR: <span id="a-total">0.00</span> ₺
-            </div>
+            <div class="calc-box">TOPLAM TUTAR: <span id="a-total">0.00</span> ₺</div>
             
             <input type="date" id="a-date">
-            <button onclick="save()" style="width:100%; padding:15px; background:var(--accent); color:white; border:none; border-radius:10px; font-weight:800; cursor:pointer;">PORTFÖYE EKLE</button>
+            <button onclick="save()" style="width:100%; padding:18px; background:var(--accent); border-radius:12px; font-size:1.1rem;">PORTFÖYE KAYDET</button>
         </div>
     </div>
 
     <div id="portfoyum" class="page">
         <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h3><i class="fas fa-history"></i> İşlem Geçmişi</h3>
-                <div>
-                    <button onclick="exportExcel()" style="background:#166534; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer;"><i class="fas fa-file-excel"></i> Excel</button>
-                    <button onclick="exportPDF()" style="background:#991b1b; color:white; border:none; padding:10px 15px; border-radius:8px; cursor:pointer;"><i class="fas fa-file-pdf"></i> PDF</button>
-                </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                <h3><i class="fas fa-list-check"></i> Yatırım Pozisyonlarım</h3>
+                <button onclick="exportExcel()" style="background:#10b981; padding:10px 20px; border-radius:8px;"><i class="fas fa-file-excel"></i> Excel</button>
             </div>
             <div style="overflow-x: auto;">
                 <table id="p-table" style="width:100%; border-collapse: collapse;">
-                    <thead>
-                        <tr style="background:#f1f5f9; text-align:left;">
-                            <th style="padding:15px;">Tarih</th><th>Varlık</th><th>Adet</th><th>Maliyet</th><th>Güncel</th><th>K/Z (%)</th>
-                        </tr>
+                    <thead style="background:#f8fafc">
+                        <tr><th style="padding:15px; text-align:left">Tarih</th><th>Varlık</th><th>Miktar</th><th>Maliyet</th><th>Güncel</th><th>K/Z</th></tr>
                     </thead>
                     <tbody id="p-body"></tbody>
                 </table>
             </div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-            <div class="card"><h4>Dağılım</h4><canvas id="pieChart"></canvas></div>
-            <div class="card"><h4>Performans</h4><canvas id="barChart"></canvas></div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px;">
+            <div class="card"><h4>Portföy Dağılımı</h4><canvas id="pieChart"></canvas></div>
+            <div class="card"><h4>Kâr / Zarar Analizi</h4><canvas id="barChart"></canvas></div>
         </div>
     </div>
 
     <div id="teknik-analiz" class="page">
-        <div class="card">
-            <div id="tradingview_terminal"></div>
-        </div>
+        <div id="tv_terminal_container"></div>
     </div>
 
     <div id="haberler" class="page">
         <div class="card">
-            <h3><i class="fas fa-newspaper"></i> Canlı Finans Haberleri (Global & Fed)</h3>
-            <div id="news-list">Haberler yükleniyor...</div>
+            <h3><i class="fas fa-rss"></i> Günlük Ekonomi & Haber Akışı</h3>
+            <div id="news-list">Haberler taranıyor...</div>
         </div>
     </div>
-
 </div>
 
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
     const API_KEY = '72ce0236fb66434e8feed08c1b2044d2';
     let livePrices = {};
-    let charts = {};
 
     function showPage(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -157,7 +145,7 @@
         if(id === 'haberler') fetchNews();
     }
 
-    // 1. CANLI PİYASA & BIST GÜNCELLEMESİ
+    // PİYASA VERİLERİ & BIST FORMATI
     async function fetchAll() {
         try {
             const syms = "XAU/USD,XAG/USD,USD/TRY,BTC/USD,ETH/USD,XU100,XU030";
@@ -166,24 +154,25 @@
             
             const usd = parseFloat(d['USD/TRY'].price);
             livePrices = {
-                "ALTIN_GR": ((parseFloat(d['XAU/USD'].price) / 31.1) * usd).toFixed(2),
-                "GUMUS_GR": ((parseFloat(d['XAG/USD'].price) / 31.1) * usd).toFixed(2),
-                "USD_TRY": usd.toFixed(4),
-                "BTC_USD": parseFloat(d['BTC/USD'].price).toLocaleString(),
-                "BIST100": d['XU100']?.price || "10250.00"
+                "GRAM ALTIN": ((parseFloat(d['XAU/USD'].price) / 31.1) * usd).toFixed(2),
+                "GRAM GÜMÜŞ": ((parseFloat(d['XAG/USD'].price) / 31.1) * usd).toFixed(2),
+                "DOLAR/TL": usd.toFixed(4),
+                "BIST 100": parseFloat(d['XU100']?.price || 10250).toLocaleString(),
+                "BITCOIN (USD)": "$" + parseFloat(d['BTC/USD'].price).toLocaleString()
             };
 
             const list = document.getElementById('price-list');
             list.innerHTML = Object.entries(livePrices).map(([n,v]) => `
-                <div style="background:white; padding:20px; border-radius:12px; border-bottom:4px solid var(--accent); display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-weight:700; color:#475569;">${n.replace('_',' ')}</span>
-                    <span style="font-size:1.2rem; font-weight:800; color:var(--p);">${v}</span>
+                <div class="price-card">
+                    <h4>${n}</h4>
+                    <div>${v}</div>
                 </div>
             `).join('');
+            renderTable();
         } catch(e) {}
     }
 
-    // 2. AKILLI ARAMA (BIST DAHİL)
+    // AKILLI ARAMA & BIST FIX
     async function search() {
         const q = document.getElementById('a-search').value;
         const res = document.getElementById('search-results');
@@ -192,13 +181,9 @@
         const r = await fetch(`https://api.twelvedata.com/symbol_search?symbol=${q}&apikey=${API_KEY}`);
         const data = await r.json();
         
-        // Tekrarları temizleme
-        const unique = Array.from(new Set(data.data.map(a => a.symbol)))
-            .map(symbol => data.data.find(a => a.symbol === symbol));
-
-        res.innerHTML = unique.slice(0,8).map(i => `
+        res.innerHTML = data.data.slice(0,8).map(i => `
             <div class="search-item" onclick="selAsset('${i.symbol}')">
-                <strong>${i.symbol}</strong> <span style="font-size:0.8rem; color:#64748b;">(${i.instrument_name})</span>
+                <i class="fas fa-search"></i> <strong>${i.symbol}</strong> | ${i.instrument_name} (${i.exchange})
             </div>
         `).join('');
         res.style.display = 'block';
@@ -208,31 +193,58 @@
         document.getElementById('search-results').style.display='none';
         document.getElementById('a-search').value = s;
         
-        const r = await fetch(`https://api.twelvedata.com/price?symbol=${s}&apikey=${API_KEY}`);
+        let formatted = s;
+        if (!s.includes(".") && !s.includes("/")) { formatted = s + ".IS"; }
+
+        const r = await fetch(`https://api.twelvedata.com/price?symbol=${formatted}&apikey=${API_KEY}`);
         const d = await r.json();
         const p = parseFloat(d.price) || 0;
 
         document.getElementById('sel-n').innerText = s;
-        document.getElementById('sel-p').innerText = p.toFixed(4);
+        document.getElementById('sel-p').innerText = p.toFixed(4) + " ₺";
         document.getElementById('a-buy').value = p.toFixed(4);
         document.getElementById('sel-info').style.display = 'block';
         calc();
     }
 
-    // 3. HABERLER (RSS -> JSON API)
+    // HABERLER (RSS)
     async function fetchNews() {
         const list = document.getElementById('news-list');
         try {
-            // Bloomberg HT veya Reuters tarzı finans haberleri
             const r = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://www.bloomberght.com/rss`);
             const d = await r.json();
-            list.innerHTML = d.items.slice(0,10).map(i => `
+            list.innerHTML = d.items.slice(0,12).map(i => `
                 <div class="news-item">
                     <span class="news-date">${i.pubDate}</span>
                     <a href="${i.link}" target="_blank" class="news-title">${i.title}</a>
                 </div>
             `).join('');
-        } catch(e) { list.innerText = "Haberler şu an yüklenemedi."; }
+        } catch(e) { list.innerText = "Haber servisi şu an meşgul."; }
+    }
+
+    // TRADINGVIEW FIX (ARAMA VE HİSSE SORUNU)
+    function loadTV() {
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": "BIST:XU100",
+            "interval": "D",
+            "timezone": "Europe/Istanbul",
+            "theme": "light",
+            "style": "1",
+            "locale": "tr",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "allow_symbol_change": true, // ARAMA AKTİF
+            "hide_side_toolbar": false, // ÇİZİM ARAÇLARI AKTİF
+            "withdateranges": true,
+            "save_image": false,
+            "studies": [
+                "RSI@tv-basicstudies",
+                "MASimple@tv-basicstudies", // MA 50
+                "MASimple@tv-basicstudies"  // MA 200
+            ],
+            "container_id": "tv_terminal_container"
+        });
     }
 
     function calc() {
@@ -243,37 +255,29 @@
 
     function save() {
         const obj = { s: document.getElementById('a-search').value, a: document.getElementById('a-amt').value, b: document.getElementById('a-buy').value, d: document.getElementById('a-date').value };
-        let db = JSON.parse(localStorage.getItem('f_v5')) || [];
+        let db = JSON.parse(localStorage.getItem('f_v10')) || [];
         db.push(obj);
-        localStorage.setItem('f_v5', JSON.stringify(db));
-        alert("Portföy Güncellendi!");
+        localStorage.setItem('f_v10', JSON.stringify(db));
+        alert("Portföye Eklendi!");
         renderTable();
     }
 
     function renderTable() {
-        const db = JSON.parse(localStorage.getItem('f_v5')) || [];
-        document.getElementById('p-body').innerHTML = db.map(i => `
-            <tr style="border-bottom:1px solid #f1f5f9;">
-                <td style="padding:15px;">${i.d}</td>
-                <td><strong>${i.s}</strong></td>
-                <td>${i.a}</td>
-                <td>${i.b} ₺</td>
-                <td>${(livePrices[i.s] || i.b)} ₺</td>
-                <td style="color:${((livePrices[i.s]||i.b)-i.b) >=0 ? 'var(--s)':'var(--d)'}; font-weight:700;">
-                    %${(((livePrices[i.s]||i.b)-i.b)/i.b*100).toFixed(2)}
-                </td>
-            </tr>
-        `).join('');
-    }
-
-    function loadTV() {
-        new TradingView.widget({
-            "autosize": true, "symbol": "BIST:XU100", "interval": "D", "timezone": "Europe/Istanbul",
-            "theme": "light", "style": "1", "locale": "tr", "toolbar_bg": "#f1f3f6",
-            "enable_publishing": false, "allow_symbol_change": true, "hide_side_toolbar": false,
-            "studies": [ "RSI@tv-basicstudies", "MASimple@tv-basicstudies", "MASimple@tv-basicstudies" ],
-            "container_id": "tradingview_terminal"
-        });
+        const db = JSON.parse(localStorage.getItem('f_v10')) || [];
+        document.getElementById('p-body').innerHTML = db.map(i => {
+            const live = parseFloat(livePrices[i.s]) || i.b;
+            const perc = (((live - i.b) / i.b) * 100).toFixed(2);
+            return `
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                    <td style="padding:15px;">${i.d}</td>
+                    <td><strong>${i.s}</strong></td>
+                    <td>${i.a}</td>
+                    <td>${i.b} ₺</td>
+                    <td>${live} ₺</td>
+                    <td style="color:${perc >= 0 ? 'var(--s)':'var(--d)'}; font-weight:800;">%${perc}</td>
+                </tr>
+            `;
+        }).join('');
     }
 
     setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString(); }, 1000);
