@@ -3,98 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finans Sepeti | Profesyonel Takip</title>
+    <title>Finans Sepeti | Pro Terminal</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <style>
         :root { --p: #1a237e; --s: #00e676; --d: #ff1744; --bg: #f4f7f9; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; }
-        header { background: var(--p); color: white; padding: 30px; text-align: center; }
-        .nav-tabs { background: #fff; display: flex; justify-content: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .tab-btn { padding: 15px 20px; border: none; background: none; font-weight: bold; cursor: pointer; color: #555; border-bottom: 3px solid transparent; }
-        .tab-btn.active { color: var(--p); border-bottom-color: var(--p); }
-        .container { padding: 20px; max-width: 1200px; margin: auto; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; }
+        header { background: var(--p); color: white; padding: 20px; text-align: center; }
+        .nav-tabs { background: #fff; display: flex; justify-content: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow-x: auto; }
+        .tab-btn { padding: 15px 20px; border: none; background: none; font-weight: bold; cursor: pointer; color: #555; white-space: nowrap; }
+        .tab-btn.active { color: var(--p); border-bottom: 3px solid var(--p); }
+        .container { padding: 20px; max-width: 1400px; margin: auto; }
         .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px; }
         .page { display: none; } .page.active { display: block; }
-        input, select, button { padding: 12px; margin: 8px 0; width: 100%; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
-        button { background: var(--p); color: white; border: none; font-weight: bold; cursor: pointer; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .chart-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; background: #eceff1; padding: 10px; border-radius: 8px; }
+        .chart-btn { background: #2c3e50; color: white; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 500; }
+        .chart-btn:hover { background: #34495e; }
+        #tradingview_terminal { height: 700px; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; }
+        table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
         .profit { color: var(--s); font-weight: bold; } .loss { color: var(--d); font-weight: bold; }
-        #tradingview_canvas { height: 600px; border-radius: 8px; overflow: hidden; }
+        input, select { padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
     </style>
 </head>
 <body>
 
 <header>
     <h1>FİNANS SEPETİ</h1>
-    <p>Canlı Fiyatlar & Teknik Analiz Portalı</p>
+    <p>Profesyonel Piyasa Takip ve Analiz Terminali</p>
 </header>
 
 <div class="nav-tabs">
-    <button class="tab-btn active" onclick="showPage('piyasalar')">Piyasalar</button>
+    <button class="tab-btn active" onclick="showPage('piyasalar')">Anlık Piyasalar</button>
     <button class="tab-btn" onclick="showPage('yatirim-ekle')">Yatırım Ekle</button>
-    <button class="tab-btn" onclick="showPage('portfoy')">Portföyüm</button>
-    <button class="tab-btn" onclick="showPage('grafik-sayfasi')">Teknik Analiz</button>
+    <button class="tab-btn" onclick="showPage('portfoy')">Yatırım Portföyüm</button>
+    <button class="tab-btn" onclick="showPage('grafik-terminali')">Canlı Grafikler</button>
 </div>
 
 <div class="container">
+    
     <div id="piyasalar" class="page active">
         <div class="card">
-            <h3>Anlık Göstergeler</h3>
-            <div id="live-prices-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <h3>Canlı Gösterge Paneli</h3>
+            <div id="live-prices" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px;">
                 Veriler yükleniyor...
             </div>
         </div>
     </div>
 
     <div id="yatirim-ekle" class="page">
-        <div class="card">
+        <div class="card" style="max-width: 500px; margin: auto;">
             <h3>Yeni Yatırım Kaydı</h3>
-            <select id="asset-type">
+            <label>Varlık Seçin:</label>
+            <select id="asset-type" style="width:100%; margin-bottom: 15px;">
                 <option value="XAU/USD">Gram Altın (TL)</option>
                 <option value="XAG/USD">Gram Gümüş (TL)</option>
                 <option value="BTC/USD">Bitcoin (BTC)</option>
-                <option value="THYAO.IS">THY (Hisse)</option>
+                <option value="BIST:THYAO">THY (Hisse)</option>
+                <option value="BIST:XU100">BIST 100 Endeksi</option>
             </select>
-            <input type="number" id="asset-amount" placeholder="Miktar (Adet/Gram)">
-            <input type="number" id="buy-price" placeholder="Alış Birim Fiyatı (TL)">
-            <input type="date" id="invest-date">
-            <button onclick="saveToStorage()">Portföye Kaydet</button>
+            <label>Miktar (Adet/Gram):</label>
+            <input type="number" id="asset-amount" placeholder="Örn: 10.5" style="width:100%; margin-bottom: 15px;">
+            <label>Alış Fiyatı (Birim TL):</label>
+            <input type="number" id="buy-price" placeholder="Örn: 2450.50" style="width:100%; margin-bottom: 15px;">
+            <label>Yatırım Tarihi:</label>
+            <input type="date" id="invest-date" style="width:100%; margin-bottom: 20px;">
+            <button onclick="saveAsset()" style="width:100%; padding:15px; background:var(--p); color:white; border:none; font-weight:bold; border-radius:8px;">Portföyüme Ekle</button>
         </div>
     </div>
 
     <div id="portfoy" class="page">
         <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                 <h3>Yatırım Takip Tablosu</h3>
-                <button onclick="downloadPDF()" style="width:auto; padding:5px 15px; background:#333;">PDF İndir</button>
+                <button onclick="downloadPDF()" style="background:#444; color:white; padding:8px 15px; border:none; border-radius:5px; cursor:pointer;">PDF İndir</button>
             </div>
-            <table id="portfolio-table">
-                <thead>
-                    <tr>
-                        <th>Varlık</th>
-                        <th>Adet</th>
-                        <th>Alış</th>
-                        <th>Güncel</th>
-                        <th>Toplam Yatırım</th>
-                        <th>Kar/Zarar</th>
-                    </tr>
-                </thead>
-                <tbody id="portfolio-body"></tbody>
-            </table>
+            <div style="overflow-x: auto;">
+                <table id="portfolio-table">
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Varlık</th>
+                            <th>Adet</th>
+                            <th>Alış Fiyatı</th>
+                            <th>Güncel Fiyat</th>
+                            <th>Toplam Değer</th>
+                            <th>Kâr/Zarar</th>
+                        </tr>
+                    </thead>
+                    <tbody id="portfolio-body"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
-    <div id="grafik-sayfasi" class="page">
+    <div id="grafik-terminali" class="page">
         <div class="card">
-            <h3>Gelişmiş Teknik Analiz (Çizim Araçlı)</h3>
-            <div style="margin-bottom: 10px; display: flex; gap: 5px; flex-wrap: wrap;">
-                <button style="width:auto" onclick="changeChart('XAUUSD')">Altın</button>
-                <button style="width:auto" onclick="changeChart('BTCUSDT')">Bitcoin</button>
-                <button style="width:auto" onclick="changeChart('BIST:THYAO')">THY</button>
+            <h3>Teknik Analiz Terminali</h3>
+            <div class="chart-controls">
+                <button class="chart-btn" onclick="loadSymbol('FX:USDTRY')">Dolar/TL</button>
+                <button class="chart-btn" onclick="loadSymbol('OANDA:XAUUSD')">Altın (Ons)</button>
+                <button class="chart-btn" onclick="loadSymbol('OANDA:XAGUSD')">Gümüş (Ons)</button>
+                <button class="chart-btn" onclick="loadSymbol('FX_IDC:XAUTRYG')">Altın (TL)</button>
+                <button class="chart-btn" onclick="loadSymbol('FX_IDC:XAGTRYG')">Gümüş (TL)</button>
+                <button class="chart-btn" onclick="loadSymbol('BINANCE:BTCUSDT')">BTC/USDT</button>
+                <button class="chart-btn" onclick="loadSymbol('BIST:XU100')" style="background:#004d40;">BIST 100</button>
             </div>
-            <div id="tradingview_canvas"></div>
+            <div id="tradingview_terminal"></div>
         </div>
     </div>
 </div>
@@ -102,83 +117,90 @@
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
     const API_KEY = '72ce0236fb66434e8feed08c1b2044d2';
-    let prices = {};
+    let currentPrices = {};
 
     function showPage(id) {
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        event.currentTarget.classList.add('active');
-        if(id === 'grafik-sayfasi') changeChart('XAUUSD');
+        if(event) event.currentTarget.classList.add('active');
+        if(id === 'grafik-terminali') loadSymbol('FX:USDTRY');
     }
 
-    async function getPrices() {
+    async function syncPrices() {
         try {
-            const symbols = "XAU/USD,XAG/USD,USD/TRY,BTC/USD,THYAO.IS";
-            const response = await fetch(`https://api.twelvedata.com/price?symbol=${symbols}&apikey=${API_KEY}`);
-            const data = await response.json();
+            const syms = "XAU/USD,XAG/USD,USD/TRY,BTC/USD,THYAO.IS";
+            const resp = await fetch(`https://api.twelvedata.com/price?symbol=${syms}&apikey=${API_KEY}`);
+            const data = await resp.json();
             
             const usd = parseFloat(data['USD/TRY'].price);
-            prices = {
-                'XAU/USD': (parseFloat(data['XAU/USD'].price) / 31.1035) * usd,
-                'XAG/USD': (parseFloat(data['XAG/USD'].price) / 31.1035) * usd,
+            currentPrices = {
+                'XAU/USD': (parseFloat(data['XAU/USD'].price) / 31.10) * usd,
+                'XAG/USD': (parseFloat(data['XAG/USD'].price) / 31.10) * usd,
                 'BTC/USD': parseFloat(data['BTC/USD'].price) * usd,
-                'THYAO.IS': parseFloat(data['THYAO.IS'].price),
+                'BIST:THYAO': parseFloat(data['THYAO.IS'].price),
                 'USD/TRY': usd
             };
-            updateUI();
-        } catch (e) { document.getElementById('live-prices-grid').innerText = "Hata: Limit aşıldı."; }
+            refreshUI();
+        } catch (e) { console.log("Limit Hatası"); }
     }
 
-    function updateUI() {
-        document.getElementById('live-prices-grid').innerHTML = `
-            <div class="card">Altın: <b>${prices['XAU/USD'].toFixed(2)} TL</b></div>
-            <div class="card">Dolar: <b>${prices['USD/TRY'].toFixed(2)} TL</b></div>
+    function refreshUI() {
+        document.getElementById('live-prices').innerHTML = `
+            <div class="card" style="text-align:center">Gram Altın<br><b>${currentPrices['XAU/USD'].toFixed(2)} TL</b></div>
+            <div class="card" style="text-align:center">Gram Gümüş<br><b>${currentPrices['XAG/USD'].toFixed(2)} TL</b></div>
+            <div class="card" style="text-align:center">Dolar/TL<br><b>${currentPrices['USD/TRY'].toFixed(2)} TL</b></div>
+            <div class="card" style="text-align:center">BTC/USD<br><b>$${(currentPrices['BTC/USD']/currentPrices['USD/TRY']).toLocaleString()}</b></div>
         `;
-        renderPortfolio();
+        renderTable();
     }
 
-    function saveToStorage() {
-        const inv = {
-            symbol: document.getElementById('asset-type').value,
-            amount: parseFloat(document.getElementById('asset-amount').value),
-            buyPrice: parseFloat(document.getElementById('buy-price').value),
-            date: document.getElementById('invest-date').value
+    function saveAsset() {
+        const item = {
+            sym: document.getElementById('asset-type').value,
+            amt: parseFloat(document.getElementById('asset-amount').value),
+            buy: parseFloat(document.getElementById('buy-price').value),
+            dt: document.getElementById('invest-date').value
         };
-        let list = JSON.parse(localStorage.getItem('my_assets')) || [];
-        list.push(inv);
-        localStorage.setItem('my_assets', JSON.stringify(list));
-        alert("Kaydedildi!");
-        renderPortfolio();
+        if(!item.amt || !item.buy) return alert("Miktar ve Fiyat giriniz!");
+        let myData = JSON.parse(localStorage.getItem('finans_data')) || [];
+        myData.push(item);
+        localStorage.setItem('finans_data', JSON.stringify(myData));
+        alert("Yatırım Kaydedildi!");
+        renderTable();
     }
 
-    function renderPortfolio() {
-        const list = JSON.parse(localStorage.getItem('my_assets')) || [];
+    function renderTable() {
+        const myData = JSON.parse(localStorage.getItem('finans_data')) || [];
         const body = document.getElementById('portfolio-body');
         body.innerHTML = '';
 
-        list.forEach(item => {
-            const current = prices[item.symbol] || 0;
-            const total = item.amount * current;
-            const diff = (current - item.buyPrice) * item.amount;
-            
+        myData.forEach(i => {
+            const live = currentPrices[i.sym] || 0;
+            const total = live * i.amt;
+            const pl = (live - i.buy) * i.amt;
+            const plPerc = ((live - i.buy) / i.buy) * 100;
+
             body.innerHTML += `
                 <tr>
-                    <td>${item.symbol}</td>
-                    <td>${item.amount}</td>
-                    <td>${item.buyPrice}</td>
-                    <td>${current.toFixed(2)}</td>
+                    <td>${i.dt}</td>
+                    <td>${i.sym}</td>
+                    <td>${i.amt}</td>
+                    <td>${i.buy.toFixed(2)} TL</td>
+                    <td>${live.toFixed(2)} TL</td>
                     <td><b>${total.toLocaleString()} TL</b></td>
-                    <td class="${diff >= 0 ? 'profit' : 'loss'}">${diff.toFixed(2)} TL</td>
+                    <td class="${pl >= 0 ? 'profit' : 'loss'}">
+                        ${pl.toFixed(2)} TL (${plPerc.toFixed(2)}%)
+                    </td>
                 </tr>
             `;
         });
     }
 
-    function changeChart(sym) {
+    function loadSymbol(s) {
         new TradingView.widget({
             "autosize": true,
-            "symbol": sym,
+            "symbol": s,
             "interval": "D",
             "timezone": "Europe/Istanbul",
             "theme": "light",
@@ -186,19 +208,28 @@
             "locale": "tr",
             "toolbar_bg": "#f1f3f6",
             "enable_publishing": false,
+            "allow_symbol_change": true, // ARAMA BUTONU BURADA
+            "hide_side_toolbar": false, // ÇİZİM ARAÇLARI BURADA
             "withdateranges": true,
-            "hide_side_toolbar": false, // Çizim araçlarını açar
-            "allow_symbol_change": true,
-            "details": true,
-            "hotlist": true,
-            "calendar": true,
-            "studies": [ "RSI@tv-basicstudies", "MAExp@tv-basicstudies", "MAExp@tv-basicstudies" ], // RSI ve 2 adet MA
-            "container_id": "tradingview_canvas"
+            "studies": [
+                "RSI@tv-basicstudies",
+                "MASimple@tv-basicstudies",
+                "MASimple@tv-basicstudies"
+            ],
+            "container_id": "tradingview_terminal"
         });
     }
 
-    getPrices();
-    setInterval(getPrices, 60000);
+    function downloadPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.text("Finans Sepeti - Portfoy Ozeti", 14, 15);
+        doc.autoTable({ html: '#portfolio-table', startY: 25 });
+        doc.save("yatirimlarim.pdf");
+    }
+
+    syncPrices();
+    setInterval(syncPrices, 60000);
 </script>
 </body>
 </html>
