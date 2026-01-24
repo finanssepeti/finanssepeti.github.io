@@ -7,102 +7,83 @@
     <style>
         :root { --accent: #00c6ff; --bg: #0f2027; --card-bg: rgba(255, 255, 255, 0.08); }
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background: var(--bg); color: #fff; display: flex; justify-content: center; min-height: 100vh; }
-        .container { width: 100%; max-width: 480px; padding: 15px; }
+        .container { width: 100%; max-width: 500px; padding: 15px; }
         .card { background: var(--card-bg); backdrop-filter: blur(12px); border-radius: 20px; padding: 20px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1); }
         h2, h3 { text-align: center; margin-top: 0; color: var(--accent); }
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 10px; border: none; background: rgba(255,255,255,0.15); color: white; box-sizing: border-box; outline: none; }
-        button { width: 100%; padding: 14px; background: var(--accent); border: none; border-radius: 10px; font-weight: bold; color: white; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #0072ff; transform: translateY(-2px); }
-        
-        .tablo-baslik { font-size: 1.1em; border-bottom: 2px solid var(--accent); padding-bottom: 5px; margin-bottom: 15px; }
+        .tablo-baslik { font-size: 1.1em; border-bottom: 2px solid var(--accent); padding-bottom: 5px; margin: 20px 0 10px 0; font-weight: bold; }
         .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
         .data-table th { text-align: left; opacity: 0.7; padding-bottom: 10px; }
-        .data-table td { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .calc-input { width: 70px !important; padding: 6px !important; margin: 0 !important; text-align: center; }
+        .data-table td { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .calc-input { width: 70px; padding: 6px; border-radius: 5px; border: none; background: rgba(255,255,255,0.2); color: #fff; text-align: center; outline: none; }
         .total-val { font-weight: bold; color: #00ff88; text-align: right; }
-        .price-val { font-weight: 500; }
+        .price-val { font-weight: 500; color: #f39c12; }
     </style>
 </head>
-<body>
+<body onload="startLiveUpdates()">
 
 <div class="container">
-    <div id="login-page" class="card">
+    <div class="card">
         <h2>Finans Sepeti</h2>
-        <input type="email" id="l-email" placeholder="E-mail Adresiniz">
-        <input type="password" id="l-pass" placeholder="Şifreniz">
-        <button onclick="showPage('dashboard-page')">Giriş Yap</button>
-        <p style="text-align:center; font-size: 14px;">Hesabınız yok mu? <span style="color:var(--accent); cursor:pointer" onclick="showPage('register-page')">Üye Ol</span></p>
+        <h3>📊 Yatırımlarım</h3>
+        <p style="font-size: 11px; text-align: center; opacity: 0.6;">Fiyatlar 30 saniyede bir otomatik güncellenir.</p>
     </div>
 
-    <div id="register-page" class="card" style="display:none;">
-        <h2>Yeni Üyelik</h2>
-        <input type="email" placeholder="E-mail Adresi Girin">
-        <input type="password" placeholder="Şifre Oluşturun">
-        <button onclick="showPage('login-page')">Kaydet ve Devam Et</button>
-        <p style="text-align:center" onclick="showPage('login-page')">Geri Dön</p>
+    <div class="card">
+        <div class="tablo-baslik">✨ Altın & Döviz</div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Varlık</th>
+                    <th>Fiyat (₺)</th>
+                    <th>Adet/Gr</th>
+                    <th style="text-align:right">Toplam</th>
+                </tr>
+            </thead>
+            <tbody id="metal-body">
+                </tbody>
+        </table>
     </div>
 
-    <div id="dashboard-page" style="display:none;">
-        <div class="card">
-            <h3>👤 Profilim</h3>
-            <div class="tablo-baslik">📊 Yatırımlarım</div>
-            <p style="font-size: 12px; text-align: center; opacity: 0.6;">Fiyatlar anlık olarak güncellenmektedir.</p>
-        </div>
+    <div class="card">
+        <div class="tablo-baslik">₿ Kripto (İlk 15)</div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Varlık</th>
+                    <th>Fiyat ($)</th>
+                    <th>Adet</th>
+                    <th style="text-align:right">Toplam</th>
+                </tr>
+            </thead>
+            <tbody id="crypto-body">
+                </tbody>
+        </table>
+    </div>
 
-        <div class="card">
-            <div class="tablo-baslik">₿ Kripto (İlk 15)</div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Varlık</th>
-                        <th>Fiyat ($)</th>
-                        <th>Adet</th>
-                        <th style="text-align:right">Toplam</th>
-                    </tr>
-                </thead>
-                <tbody id="crypto-body">
-                    </tbody>
-            </table>
-        </div>
-
-        <div class="card">
-            <div class="tablo-baslik">✨ Altın & Döviz</div>
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>Varlık</th>
-                        <th>Fiyat (₺)</th>
-                        <th>Gr/Adet</th>
-                        <th style="text-align:right">Toplam</th>
-                    </tr>
-                </thead>
-                <tbody id="metal-body">
-                    </tbody>
-            </table>
-        </div>
-        
-        <button onclick="location.reload()" style="background: #ff4b2b;">Güvenli Çıkış</button>
+    <div class="card">
+        <div class="tablo-baslik">📈 BIST 30 Hisseleri</div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Hisse</th>
+                    <th>Fiyat (₺)</th>
+                    <th>Lot</th>
+                    <th style="text-align:right">Toplam</th>
+                </tr>
+            </thead>
+            <tbody id="bist-body">
+                </tbody>
+        </table>
     </div>
 </div>
 
 <script>
-    // Sayfa değiştirme fonksiyonu
-    function showPage(id) {
-        document.querySelectorAll('.card, #dashboard-page').forEach(el => el.style.display = 'none');
-        document.getElementById(id).style.display = 'block';
-        if(id === 'dashboard-page') { 
-            startLiveUpdates();
-        }
-    }
-
-    // Hesaplama Motoru
     function calculate(input, price, targetId, symbol) {
         const qty = parseFloat(input.value) || 0;
         const total = qty * price;
         document.getElementById(targetId).innerText = total.toLocaleString(undefined, {minimumFractionDigits: 2}) + " " + symbol;
     }
 
-    // Canlı Kripto Verileri (Binance API)
     async function fetchCrypto() {
         try {
             const res = await fetch('https://api.binance.com/api/v3/ticker/price');
@@ -116,40 +97,59 @@
                 html += `<tr>
                     <td><b>${name}</b></td>
                     <td class="price-val">${price < 1 ? price.toFixed(4) : price.toFixed(2)}</td>
-                    <td><input type="number" class="calc-input" placeholder="0" oninput="calculate(this, ${price}, 'total-${name}', '$')"></td>
-                    <td class="total-val" id="total-${name}">0.00 $</td>
+                    <td><input type="number" class="calc-input" placeholder="0" oninput="calculate(this, ${price}, 'c-${name}', '$')"></td>
+                    <td class="total-val" id="c-${name}">0.00 $</td>
                 </tr>`;
             });
             document.getElementById('crypto-body').innerHTML = html;
-        } catch (err) { console.error("Kripto çekilemedi"); }
+        } catch (err) { console.log("Kripto hatası"); }
     }
 
-    // Altın ve Döviz Verileri (Temsili Canlı - Gerçek API anahtarı olmadan simüle edilmiştir)
     function fetchMetals() {
-        const metals = [
-            {n: 'Ons Altın', p: 2025.40, s: '$'},
-            {n: 'Gram Altın', p: 3045.20, s: '₺'},
-            {n: 'Çeyrek Altın', p: 5120.00, s: '₺'},
-            {n: 'Gümüş (Gr)', p: 38.45, s: '₺'}
+        // Döviz ve Altın için örnek güncel temsilî fiyatlar
+        const data = [
+            {n: 'Gram Altın', p: 3048.50},
+            {n: 'Ons Altın ($)', p: 2024.10},
+            {n: 'Çeyrek Altın', p: 5125.00},
+            {n: 'Gümüş (Gr)', p: 38.60},
+            {n: 'ABD Doları', p: 30.25}
         ];
         let html = '';
-        metals.forEach(m => {
+        data.forEach((m, i) => {
             html += `<tr>
                 <td><b>${m.n}</b></td>
                 <td class="price-val">${m.p.toFixed(2)}</td>
-                <td><input type="number" class="calc-input" placeholder="0" oninput="calculate(this, ${m.p}, 'total-${m.n}', '${m.s}')"></td>
-                <td class="total-val" id="total-${m.n}">0.00 ${m.s}</td>
+                <td><input type="number" class="calc-input" placeholder="0" oninput="calculate(this, ${m.p}, 'm-${i}', '₺')"></td>
+                <td class="total-val" id="m-${i}">0.00 ₺</td>
             </tr>`;
         });
         document.getElementById('metal-body').innerHTML = html;
     }
 
+    function fetchBist() {
+        const stocks = ['THYAO', 'EREGL', 'ASELS', 'AKBNK', 'ISCTR', 'KCHOL', 'SISE', 'BIMAS', 'TUPRS', 'SASAD'];
+        let html = '';
+        stocks.forEach((s, i) => {
+            const mockPrice = (Math.random() * 200 + 10).toFixed(2); // BIST için temsilî fiyat
+            html += `<tr>
+                <td><b>${s}</b></td>
+                <td class="price-val">${mockPrice}</td>
+                <td><input type="number" class="calc-input" placeholder="0" oninput="calculate(this, ${mockPrice}, 'b-${i}', '₺')"></td>
+                <td class="total-val" id="b-${i}">0.00 ₺</td>
+            </tr>`;
+        });
+        document.getElementById('bist-body').innerHTML = html;
+    }
+
     function startLiveUpdates() {
         fetchCrypto();
         fetchMetals();
-        setInterval(fetchCrypto, 30000); // 30 saniyede bir güncelle
+        fetchBist();
+        setInterval(() => {
+            fetchCrypto();
+            fetchMetals();
+        }, 30000);
     }
 </script>
-
 </body>
 </html>
