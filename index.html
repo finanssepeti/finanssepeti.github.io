@@ -3,298 +3,252 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finans Sepeti - Profesyonel Finansal Analiz & Sosyal Ağ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Finans Sepeti - Profesyonel Finans Portalı</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         :root {
-            --bg-color: #e0e5ec;
-            --shadow-light: #ffffff;
-            --shadow-dark: #a3b1c6;
-            --primary-blue: #2c3e50;
-            --accent-green: #27ae60;
-            --accent-red: #c0392b;
+            --bg: #e0e5ec;
+            --shadow: 9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
+            --inner-shadow: inset 6px 6px 12px #a3b1c6, inset -6px -6px 12px #ffffff;
+            --primary: #2c3e50;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 20px;
-            color: var(--primary-blue);
-        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; color: var(--primary); }
+        
+        /* Neumorphism Sınıfları */
+        .neu-card { background: var(--bg); border-radius: 20px; box-shadow: var(--shadow); padding: 20px; margin-bottom: 20px; }
+        .neu-btn { background: var(--bg); border: none; padding: 10px 20px; border-radius: 12px; box-shadow: var(--shadow); cursor: pointer; font-weight: 600; color: var(--primary); transition: 0.2s; }
+        .neu-btn:active { box-shadow: var(--inner-shadow); transform: scale(0.98); }
+        .neu-input { background: var(--bg); border: none; padding: 12px; border-radius: 10px; box-shadow: var(--inner-shadow); width: 100%; box-sizing: border-box; margin-bottom: 10px; }
 
-        /* Neumorphism Tasarımı */
-        .neu-card {
-            background: var(--bg-color);
-            border-radius: 20px;
-            box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
-            padding: 20px;
-            margin-bottom: 25px;
-        }
+        /* Layout */
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .nav-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; }
+        
+        /* Piyasalar Grid */
+        .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+        .market-item { text-align: center; cursor: pointer; }
+        .market-item h4 { font-size: 0.8rem; margin: 0; opacity: 0.7; }
+        .market-item p { font-size: 1.1rem; font-weight: bold; margin: 5px 0; }
 
-        .neu-button {
-            border: none;
-            padding: 12px 25px;
-            border-radius: 12px;
-            background: var(--bg-color);
-            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
-            cursor: pointer;
-            transition: 0.3s;
-            font-weight: 600;
-        }
-
-        .neu-button:active {
-            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
-        }
-
-        /* Üst Menü */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        /* Canlı Fiyat Grid */
-        .price-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .price-item {
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .price-item h4 { margin: 0; font-size: 0.9rem; color: #666; }
-        .price-item span { font-size: 1.2rem; font-weight: bold; color: var(--primary-blue); }
-
-        /* Profil ve Sosyal Katman */
-        .page-section { display: none; }
+        /* Tab Kontrolü */
+        .page-content { display: none; }
         .active { display: block; }
 
-        .social-feed { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+        /* Profil & Sosyal */
+        .profile-container { display: grid; grid-template-columns: 300px 1fr; gap: 20px; }
+        .social-post { border-bottom: 1px solid #ccc; padding-bottom: 15px; margin-bottom: 15px; }
 
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            border-radius: 8px;
-            border: none;
-            background: #e0e5ec;
-            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
-        }
+        #tv-chart-container { height: 600px; border-radius: 20px; overflow: hidden; }
+        
+        /* Gelir Gider Tablosu */
+        .budget-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+        .month-select { margin-bottom: 20px; width: 200px; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ccc; }
-
-        #chart-container { height: 600px; margin-top: 20px; border-radius: 15px; overflow: hidden; }
+        /* Bloomberg Haber Bandı */
+        .news-sidebar { position: fixed; right: 0; top: 0; width: 300px; height: 100vh; background: var(--bg); box-shadow: -5px 0 15px rgba(0,0,0,0.1); padding: 20px; overflow-y: auto; display: none; z-index: 1000; }
     </style>
 </head>
 <body>
 
-    <header>
-        <button class="neu-button" onclick="showPage('profile-page')"><i class="fas fa-user-circle"></i> Profilim</button>
-        <h1 style="margin: 0;">Finans Sepeti</h1>
-        <div id="date-time" style="font-weight: 600;"></div>
-    </header>
+<header>
+    <button class="neu-btn" onclick="showPage('profile-login')"><i class="fas fa-user"></i> Profilim</button>
+    <h2 style="letter-spacing: 2px;">FİNANS SEPETİ</h2>
+    <div id="live-clock" style="font-weight: 600;"></div>
+</header>
 
-    <div class="nav-menu neu-card">
-        <button class="neu-button" onclick="showPage('markets-page')"><i class="fas fa-chart-line"></i> Piyasalar</button>
-        <button class="neu-button" onclick="showPage('invest-page')"><i class="fas fa-plus"></i> Yatırım Ekle</button>
-        <button class="neu-button" onclick="showPage('portfolio-page')"><i class="fas fa-wallet"></i> Portföyüm</button>
-        <button class="neu-button" onclick="showPage('analysis-page')"><i class="fas fa-microchip"></i> Teknik Analiz</button>
-        <button class="neu-button" onclick="alert('Haberler Yakında!')"><i class="fas fa-newspaper"></i> Haberler</button>
+<div class="nav-bar neu-card">
+    <button class="neu-btn" onclick="showPage('markets-page')">Piyasalar</button>
+    <button class="neu-btn" onclick="showPage('add-investment')">Yatırım Ekle</button>
+    <button class="neu-btn" onclick="showPage('portfolio-page')">Portföyüm</button>
+    <button class="neu-btn" onclick="showPage('analysis-page')">Teknik Analiz</button>
+    <button class="neu-btn" onclick="toggleNews()">Haberler</button>
+</div>
+
+<div id="markets-page" class="page-content active">
+    <div class="neu-card market-grid">
+        <div class="market-item" onclick="updateChart('FX_IDC:XAUTRYG')"><h4>Altın/TL</h4><p>Canlı</p></div>
+        <div class="market-item" onclick="updateChart('FX_IDC:XAUTRY')"><h4>Altın/Ons</h4><p>Canlı</p></div>
+        <div class="market-item" onclick="updateChart('FX_IDC:XAGTRYG')"><h4>Gümüş/TL</h4><p>Canlı</p></div>
+        <div class="market-item" onclick="updateChart('FX_IDC:USDTRY')"><h4>Dolar/TL</h4><p>Canlı</p></div>
+        <div class="market-item" onclick="updateChart('FX_IDC:EURTRY')"><h4>Euro/TL</h4><p>Canlı</p></div>
+        <div class="market-item" onclick="updateChart('BITSTAMP:BTCUSD')"><h4>BTC/USD</h4><p>Canlı</p></div>
+        <div class="market-item" onclick="updateChart('BTCTURK:BTCTRY')"><h4>BTC/TL</h4><p>Canlı</p></div>
+        <div class="market-item" onclick="updateChart('BIST:XU100')"><h4>BIST 100</h4><p>Canlı</p></div>
     </div>
+    <div id="tv-chart-container" class="neu-card"></div>
+</div>
 
-    <div id="markets-page" class="page-section active">
+<div id="profile-login" class="page-content">
+    <div class="neu-card" style="max-width: 400px; margin: auto; text-align: center;">
+        <h3>Oturum Aç</h3>
+        <button class="neu-btn" style="width: 100%; margin-bottom: 15px;" onclick="window.open('https://accounts.google.com', '_blank')"><i class="fab fa-google"></i> Google ile Giriş</button>
+        <button class="neu-btn" style="width: 100%;" onclick="window.open('https://facebook.com', '_blank')"><i class="fab fa-facebook"></i> Facebook ile Giriş</button>
+        <hr style="margin: 20px 0; opacity: 0.2;">
+        <button class="neu-btn" onclick="showPage('real-profile')">Simülasyon Girişi Yap</button>
+    </div>
+</div>
+
+<div id="real-profile" class="page-content">
+    <div class="profile-container">
         <div class="neu-card">
-            <h3>Canlı Veriler (Grafik için Tıklayın)</h3>
-            <div class="price-grid" id="ticker-grid">
-                </div>
+            <h4>Profil Bilgileri</h4>
+            <p><b>Ad:</b> Misafir</p>
+            <p><b>Üniversite:</b> <input class="neu-input" type="text" placeholder="Üniversite girin"></p>
+            <button class="neu-btn" onclick="showPage('budget-section')">Bütçe & EBITDA</button>
+            <hr>
+            <button class="neu-btn" style="width:100%" onclick="alert('Mesajlar Yükleniyor...')">Mesajlarım</button>
+            <button class="neu-btn" style="width:100%; margin-top:10px;" onclick="showPage('add-friend')">Arkadaş Ekle</button>
         </div>
-        <div class="neu-card" id="main-chart-box">
-            <h3 id="chart-title">Grafik İzleme</h3>
-            <div id="chart-container"></div>
+        <div class="neu-card">
+            <h4>Zaman Tüneli</h4>
+            <textarea class="neu-input" placeholder="Bir şeyler paylaş..."></textarea>
+            <button class="neu-btn">Paylaş</button>
+            <div class="social-post" style="margin-top:20px;">
+                <b>Admin:</b> Portföy durumu nasıl arkadaşlar? <br>
+                <small>2 dakika önce</small>
+                <div style="margin-top:10px;">
+                    <i class="far fa-heart" style="cursor:pointer"></i> Beğen | <i class="far fa-comment"></i> Yorum
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <div id="profile-page" class="page-section">
-        <div class="social-feed">
+<div id="budget-section" class="page-content">
+    <div class="neu-card">
+        <h3>Bütçe Yönetimi</h3>
+        <select class="neu-input month-select" id="selected-month">
+            <option value="1">Ocak</option><option value="2">Şubat</option>
+            <option value="12">Aralık</option>
+        </select>
+        <div class="budget-grid">
             <div class="neu-card">
-                <h3>Oturum Aç</h3>
-                <button class="neu-button" style="width:100%; margin-bottom:10px;"><i class="fab fa-google"></i> Google ile Giriş</button>
-                <button class="neu-button" style="width:100%;"><i class="fab fa-facebook"></i> Facebook ile Giriş</button>
-                <hr>
-                <h4>Profil Bilgilerim</h4>
-                <p><b>Ad Soyad:</b> <span contenteditable="true">Misafir Kullanıcı</span></p>
-                <p><b>Üniversite:</b> <input type="text" placeholder="Üniversite Yazın"></p>
-                <p><b>Kurum:</b> <input type="text" placeholder="Çalıştığınız Yer"></p>
-                
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <button class="neu-button" onclick="alert('Mesaj Kutusu Boş')">Mesajlarım</button>
-                    <button class="neu-button" onclick="alert('Arkadaş Bulucu')">Arkadaş Ekle</button>
-                    <button class="neu-button" onclick="showPage('budget-page')">Gelir/Gider & EBITDA</button>
-                </div>
+                <h4>Gelirlerim (5 Kalem)</h4>
+                <div id="gelir-inputs"></div>
             </div>
             <div class="neu-card">
-                <h3>Paylaşımlar (Facebook Tarzı)</h3>
-                <textarea class="neu-card" style="width:90%; height:80px;" placeholder="Ne düşünüyorsun?"></textarea>
-                <button class="neu-button">Paylaş</button>
-                <div id="feed-items" style="margin-top:20px;">
-                    <div class="neu-card" style="font-size: 0.9rem;">
-                        <b>Admin:</b> Hoş geldiniz! Finans sepetini hemen kullanmaya başlayabilirsiniz.
-                        <div style="margin-top:10px;">
-                            <button class="neu-button" style="padding:5px 10px;"><i class="fas fa-thumbs-up"></i> Beğen</button>
-                            <button class="neu-button" style="padding:5px 10px;"><i class="fas fa-comment"></i> Yorum Yap</button>
-                        </div>
-                    </div>
-                </div>
+                <h4>Giderlerim</h4>
+                <h5>Faturalar</h5> <div id="gider1-inputs"></div>
+                <h5>Genel Giderler</h5> <div id="gider2-inputs"></div>
+                <h5>Kredi Kartları</h5> <div id="gider3-inputs"></div>
+                <h5>Krediler (EBITDA Hariç)</h5> <div id="gider4-inputs"></div>
             </div>
         </div>
-    </div>
-
-    <div id="budget-page" class="page-section">
-        <div class="neu-card">
-            <h3>Yıllık Bütçe Planı & EBITDA</h3>
-            <select id="budget-month" class="neu-button">
-                <option>Ocak</option><option>Şubat</option><option>Mart</option>
-                </select>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:20px;">
-                <div>
-                    <h4>Gelirler (5 Kalem)</h4>
-                    <div id="gelir-inputs"></div>
-                    <strong>Toplam Gelir: <span id="total-income">0</span> TL</strong>
-                </div>
-                <div>
-                    <h4>Giderler (Faturalar + Genel + Kart)</h4>
-                    <div id="gider-inputs"></div>
-                    <strong>Toplam Gider (Ebitda için): <span id="total-expense">0</span> TL</strong>
-                </div>
-            </div>
-            <div class="neu-card" style="background: #2c3e50; color: white; margin-top:20px;">
-                <h3>EBITDA: <span id="ebitda-val">0</span> TL</h3>
-            </div>
+        <div class="neu-card" style="background: #27ae60; color: white;">
+            <h3>Aylık EBITDA: <span id="ebitda-result">0</span> TL</h3>
         </div>
     </div>
+</div>
 
-    <div id="analysis-page" class="page-section">
-        <div class="neu-card">
-            <h3>Gelişmiş Teknik Analiz (TradingView)</h3>
-            <p>RSI, MA50, MA200 ve Robot Sinyalleri Aktif</p>
-            <div id="advanced-analysis-container" style="height: 700px;"></div>
+<div id="analysis-page" class="page-content">
+    <div class="neu-card" id="trading-robot-container" style="height: 800px;">
         </div>
-    </div>
+</div>
 
-    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-    <script>
-        // Sayfa Değiştirme Fonksiyonu
-        function showPage(pageId) {
-            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            if(pageId === 'analysis-page') loadTechnicalAnalysis();
+<div id="news-sidebar" class="news-sidebar">
+    <button class="neu-btn" onclick="toggleNews()">Kapat</button>
+    <h4>Bloomberg Canlı Finans</h4>
+    <div id="news-content" style="font-size: 0.85rem;">Haberler yükleniyor...</div>
+</div>
+
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+<script>
+    // Zaman Güncelleme
+    setInterval(() => {
+        document.getElementById('live-clock').innerText = new Date().toLocaleString('tr-TR');
+    }, 1000);
+
+    // Sayfa Yönetimi
+    function showPage(pageId) {
+        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        if(pageId === 'analysis-page') loadTechnicalRobot();
+    }
+
+    // Haberler Sidebar
+    function toggleNews() {
+        const side = document.getElementById('news-sidebar');
+        side.style.display = side.style.display === 'block' ? 'none' : 'block';
+        document.getElementById('news-content').innerHTML = `
+            <p>• Bloomberg: Altın fiyatları rekor kırdı... (16:50)</p>
+            <p>• BIST 100 güne %0.5 yükselişle başladı... (16:45)</p>
+            <p>• TCMB Faiz kararı beklentileri açıklandı... (16:30)</p>
+        `;
+    }
+
+    // Grafik Güncelleme (Hata vermeyen TradingView Widget)
+    function updateChart(symbol) {
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": symbol,
+            "interval": "15",
+            "timezone": "Europe/Istanbul",
+            "theme": "light",
+            "style": "1",
+            "locale": "tr",
+            "toolbar_bg": "#f1f3f6",
+            "enable_publishing": false,
+            "allow_symbol_change": true,
+            "container_id": "tv-chart-container"
+        });
+    }
+
+    // Teknik Analiz Robotu (Al-Sat Sinyalli)
+    function loadTechnicalRobot() {
+        new TradingView.widget({
+            "width": "100%",
+            "height": 750,
+            "symbol": "BINANCE:BTCUSDT",
+            "interval": "1H",
+            "timezone": "Europe/Istanbul",
+            "theme": "light",
+            "style": "1",
+            "locale": "tr",
+            "container_id": "trading-robot-container",
+            "studies": [
+                "RSI@tv-basicstudies",
+                "MASimple@tv-basicstudies", // MA50
+                "MASimple@tv-basicstudies", // MA200
+                "StochasticRSI@tv-basicstudies",
+                "MACD@tv-basicstudies"
+            ],
+            "show_popup_button": true,
+            "popup_width": "1000",
+            "popup_height": "650"
+        });
+    }
+
+    // Gelir Gider Girişlerini Oluştur
+    function createInputs(containerId, count) {
+        const container = document.getElementById(containerId);
+        for(let i=0; i<count; i++) {
+            container.innerHTML += `<div style="display:flex; gap:5px;"><input class="neu-input" placeholder="Kalem ${i+1}"><input class="neu-input val-input" type="number" placeholder="TL" oninput="calculateEbitda()"></div>`;
         }
+    }
 
-        // Canlı Ticker Listesi
-        const symbols = [
-            { name: "Altın/TL", sym: "FX_IDC:XAUTRYG" },
-            { name: "Gümüş/TL", sym: "FX_IDC:XAGTRYG" },
-            { name: "Dolar/TL", sym: "FX_IDC:USDTRY" },
-            { name: "Euro/TL", sym: "FX_IDC:EURTRY" },
-            { name: "BTC/USD", sym: "BITSTAMP:BTCUSD" },
-            { name: "BIST 100", sym: "BIST:XU100" }
-        ];
+    function calculateEbitda() {
+        let gelirler = Array.from(document.querySelectorAll('#gelir-inputs .val-input')).reduce((a,b) => a + (Number(b.value)||0), 0);
+        let g1 = Array.from(document.querySelectorAll('#gider1-inputs .val-input')).reduce((a,b) => a + (Number(b.value)||0), 0);
+        let g2 = Array.from(document.querySelectorAll('#gider2-inputs .val-input')).reduce((a,b) => a + (Number(b.value)||0), 0);
+        let g3 = Array.from(document.querySelectorAll('#gider3-inputs .val-input')).reduce((a,b) => a + (Number(b.value)||0), 0);
+        
+        // Gider 4 (Krediler) EBITDA'ya katılmaz (Faiz/Amortisman mantığı)
+        document.getElementById('ebitda-result').innerText = (gelirler - (g1 + g2 + g3)).toLocaleString('tr-TR');
+    }
 
-        function initTickers() {
-            const grid = document.getElementById('ticker-grid');
-            symbols.forEach(s => {
-                const div = document.createElement('div');
-                div.className = 'neu-card price-item';
-                div.innerHTML = `<h4>${s.name}</h4><span>Tıkla Gör</span>`;
-                div.onclick = () => loadChart(s.sym, s.name);
-                grid.appendChild(div);
-            });
-        }
+    // Başlangıç Yüklemeleri
+    window.onload = () => {
+        updateChart('FX_IDC:XAUTRYG');
+        createInputs('gelir-inputs', 5);
+        createInputs('gider1-inputs', 5);
+        createInputs('gider2-inputs', 5);
+        createInputs('gider3-inputs', 5);
+        createInputs('gider4-inputs', 5);
+    };
+</script>
 
-        // Grafik Yükleme (TradingView)
-        function loadChart(symbol, label) {
-            document.getElementById('chart-title').innerText = label + " - Canlı Grafik";
-            new TradingView.widget({
-                "autosize": true,
-                "symbol": symbol,
-                "interval": "15",
-                "timezone": "Europe/Istanbul",
-                "theme": "light",
-                "style": "1",
-                "locale": "tr",
-                "toolbar_bg": "#f1f3f6",
-                "enable_publishing": false,
-                "hide_side_toolbar": false,
-                "allow_symbol_change": true,
-                "container_id": "chart-container"
-            });
-        }
-
-        // Teknik Analiz Al-Sat Robotu Widget
-        function loadTechnicalAnalysis() {
-            new TradingView.widget({
-                "width": "100%",
-                "height": 700,
-                "symbol": "BINANCE:BTCUSDT",
-                "interval": "1H",
-                "timezone": "Europe/Istanbul",
-                "theme": "light",
-                "style": "1",
-                "locale": "tr",
-                "container_id": "advanced-analysis-container",
-                "studies": [
-                    "RSI@tv-basicstudies",
-                    "MASimple@tv-basicstudies", // MA50
-                    "MASimple@tv-basicstudies"  // MA200
-                ]
-            });
-        }
-
-        // Bütçe Hesaplama Dinamikleri
-        function initBudget() {
-            const gIn = document.getElementById('gelir-inputs');
-            const expIn = document.getElementById('gider-inputs');
-            for(let i=1; i<=5; i++) {
-                gIn.innerHTML += `<input type="number" class="inc-v" placeholder="Gelir Kalemi ${i} (TL)" oninput="calc()">`;
-                expIn.innerHTML += `<input type="number" class="exp-v" placeholder="Gider Kalemi ${i} (TL)" oninput="calc()">`;
-            }
-        }
-
-        function calc() {
-            let inc = [...document.querySelectorAll('.inc-v')].reduce((a,b) => a + (Number(b.value)||0), 0);
-            let exp = [...document.querySelectorAll('.exp-v')].reduce((a,b) => a + (Number(b.value)||0), 0);
-            document.getElementById('total-income').innerText = inc;
-            document.getElementById('total-expense').innerText = exp;
-            document.getElementById('ebitda-val').innerText = inc - exp;
-        }
-
-        // Zaman Güncelleme
-        setInterval(() => {
-            const now = new Date();
-            document.getElementById('date-time').innerText = now.toLocaleString('tr-TR');
-        }, 1000);
-
-        // Başlangıç
-        window.onload = () => {
-            initTickers();
-            initBudget();
-            loadChart("FX_IDC:XAUTRYG", "Altın/TL");
-        };
-    </script>
 </body>
 </html>
