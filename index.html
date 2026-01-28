@@ -1,543 +1,300 @@
 <!DOCTYPE html>
-<html lang="tr" data-theme="dark">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YatırımPro - Profesyonel Analiz Platformu</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <title>Finans Sepeti - Profesyonel Finansal Analiz & Sosyal Ağ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #e0e5ec;
+            --shadow-light: #ffffff;
+            --shadow-dark: #a3b1c6;
+            --primary-blue: #2c3e50;
+            --accent-green: #27ae60;
+            --accent-red: #c0392b;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: var(--primary-blue);
+        }
+
+        /* Neumorphism Tasarımı */
+        .neu-card {
+            background: var(--bg-color);
+            border-radius: 20px;
+            box-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .neu-button {
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            background: var(--bg-color);
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+        }
+
+        .neu-button:active {
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
+        }
+
+        /* Üst Menü */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* Canlı Fiyat Grid */
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .price-item {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .price-item h4 { margin: 0; font-size: 0.9rem; color: #666; }
+        .price-item span { font-size: 1.2rem; font-weight: bold; color: var(--primary-blue); }
+
+        /* Profil ve Sosyal Katman */
+        .page-section { display: none; }
+        .active { display: block; }
+
+        .social-feed { display: grid; grid-template-columns: 1fr 2fr; gap: 20px; }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            border: none;
+            background: #e0e5ec;
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+        }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ccc; }
+
+        #chart-container { height: 600px; margin-top: 20px; border-radius: 15px; overflow: hidden; }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="logo">
-                <i class="fas fa-chart-line"></i>
-                <span>Yatırım<span class="logo-highlight">Pro</span></span>
-            </div>
-            
-            <div class="nav-menu">
-                <a href="index.html" class="nav-link active"><i class="fas fa-home"></i> Ana Sayfa</a>
-                <a href="dashboard.html" class="nav-link"><i class="fas fa-chart-bar"></i> Piyasalar</a>
-                <a href="analysis.html" class="nav-link"><i class="fas fa-search"></i> Teknik Analiz</a>
-                <a href="portfolio.html" class="nav-link"><i class="fas fa-chart-pie"></i> Portföyüm</a>
-                <a href="#" class="nav-link"><i class="fas fa-wallet"></i> Yatırım Hesabım</a>
-            </div>
-            
-            <div class="nav-controls">
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button class="btn-notification">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge">3</span>
-                </button>
-                <div class="user-profile">
-                    <img src="https://ui-avatars.com/api/?name=Yatırımcı&background=667eea&color=fff" alt="Profil">
-                </div>
-            </div>
-            
-            <button class="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
-            </button>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">
-                    <span class="gradient-text">Akıllı Yatırım</span> İçin<br>
-                    Profesyonel Analiz Platformu
-                </h1>
-                <p class="hero-subtitle">
-                    MA50, MA200, Bollinger Bands, RSI, MACD ve daha fazlası ile<br>
-                    doğru al-sat sinyallerini yakalayın
-                </p>
-                
-                <!-- Arama Bar -->
-                <div class="search-container">
-                    <div class="search-box">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" id="globalSearch" placeholder="Hisse, Kripto, Döviz veya Fon ara...">
-                        <button class="search-btn" onclick="searchAsset()">Analiz Et</button>
-                    </div>
-                    <div class="search-suggestions" id="searchSuggestions">
-                        <!-- Arama önerileri buraya gelecek -->
-                    </div>
+    <header>
+        <button class="neu-button" onclick="showPage('profile-page')"><i class="fas fa-user-circle"></i> Profilim</button>
+        <h1 style="margin: 0;">Finans Sepeti</h1>
+        <div id="date-time" style="font-weight: 600;"></div>
+    </header>
+
+    <div class="nav-menu neu-card">
+        <button class="neu-button" onclick="showPage('markets-page')"><i class="fas fa-chart-line"></i> Piyasalar</button>
+        <button class="neu-button" onclick="showPage('invest-page')"><i class="fas fa-plus"></i> Yatırım Ekle</button>
+        <button class="neu-button" onclick="showPage('portfolio-page')"><i class="fas fa-wallet"></i> Portföyüm</button>
+        <button class="neu-button" onclick="showPage('analysis-page')"><i class="fas fa-microchip"></i> Teknik Analiz</button>
+        <button class="neu-button" onclick="alert('Haberler Yakında!')"><i class="fas fa-newspaper"></i> Haberler</button>
+    </div>
+
+    <div id="markets-page" class="page-section active">
+        <div class="neu-card">
+            <h3>Canlı Veriler (Grafik için Tıklayın)</h3>
+            <div class="price-grid" id="ticker-grid">
                 </div>
+        </div>
+        <div class="neu-card" id="main-chart-box">
+            <h3 id="chart-title">Grafik İzleme</h3>
+            <div id="chart-container"></div>
+        </div>
+    </div>
+
+    <div id="profile-page" class="page-section">
+        <div class="social-feed">
+            <div class="neu-card">
+                <h3>Oturum Aç</h3>
+                <button class="neu-button" style="width:100%; margin-bottom:10px;"><i class="fab fa-google"></i> Google ile Giriş</button>
+                <button class="neu-button" style="width:100%;"><i class="fab fa-facebook"></i> Facebook ile Giriş</button>
+                <hr>
+                <h4>Profil Bilgilerim</h4>
+                <p><b>Ad Soyad:</b> <span contenteditable="true">Misafir Kullanıcı</span></p>
+                <p><b>Üniversite:</b> <input type="text" placeholder="Üniversite Yazın"></p>
+                <p><b>Kurum:</b> <input type="text" placeholder="Çalıştığınız Yer"></p>
                 
-                <div class="hero-stats">
-                    <div class="stat-card">
-                        <div class="stat-value">50+</div>
-                        <div class="stat-label">Teknik Gösterge</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">1000+</div>
-                        <div class="stat-label">Varlık</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">24/7</div>
-                        <div class="stat-label">Canlı Takip</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value">%99.9</div>
-                        <div class="stat-label">Doğruluk Oranı</div>
-                    </div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button class="neu-button" onclick="alert('Mesaj Kutusu Boş')">Mesajlarım</button>
+                    <button class="neu-button" onclick="alert('Arkadaş Bulucu')">Arkadaş Ekle</button>
+                    <button class="neu-button" onclick="showPage('budget-page')">Gelir/Gider & EBITDA</button>
                 </div>
             </div>
-            
-            <div class="hero-graphic">
-                <div class="floating-cards">
-                    <div class="card-3d card-1">
-                        <div class="card-header">
-                            <h4>BTC/USDT</h4>
-                            <span class="price-up">+2.5%</span>
+            <div class="neu-card">
+                <h3>Paylaşımlar (Facebook Tarzı)</h3>
+                <textarea class="neu-card" style="width:90%; height:80px;" placeholder="Ne düşünüyorsun?"></textarea>
+                <button class="neu-button">Paylaş</button>
+                <div id="feed-items" style="margin-top:20px;">
+                    <div class="neu-card" style="font-size: 0.9rem;">
+                        <b>Admin:</b> Hoş geldiniz! Finans sepetini hemen kullanmaya başlayabilirsiniz.
+                        <div style="margin-top:10px;">
+                            <button class="neu-button" style="padding:5px 10px;"><i class="fas fa-thumbs-up"></i> Beğen</button>
+                            <button class="neu-button" style="padding:5px 10px;"><i class="fas fa-comment"></i> Yorum Yap</button>
                         </div>
-                        <div class="mini-chart" id="btcMiniChart"></div>
-                        <div class="signal-badge buy">AL SİNYALİ</div>
-                    </div>
-                    
-                    <div class="card-3d card-2">
-                        <div class="card-header">
-                            <h4>ALTIN/TL</h4>
-                            <span class="price-up">+1.2%</span>
-                        </div>
-                        <div class="mini-chart" id="goldMiniChart"></div>
-                        <div class="signal-badge sell">SAT SİNYALİ</div>
-                    </div>
-                    
-                    <div class="card-3d card-3">
-                        <div class="card-header">
-                            <h4>THYAO</h4>
-                            <span class="price-down">-0.8%</span>
-                        </div>
-                        <div class="mini-chart" id="thyMiniChart"></div>
-                        <div class="signal-badge hold">BEKLE</div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Piyasalar Bölümü -->
-    <section class="markets-section">
-        <div class="container">
-            <div class="section-header">
-                <h2><i class="fas fa-chart-line"></i> Piyasalar</h2>
-                <p class="section-subtitle">Canlı grafikler ve al-sat sinyalleri</p>
+    <div id="budget-page" class="page-section">
+        <div class="neu-card">
+            <h3>Yıllık Bütçe Planı & EBITDA</h3>
+            <select id="budget-month" class="neu-button">
+                <option>Ocak</option><option>Şubat</option><option>Mart</option>
+                </select>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:20px;">
+                <div>
+                    <h4>Gelirler (5 Kalem)</h4>
+                    <div id="gelir-inputs"></div>
+                    <strong>Toplam Gelir: <span id="total-income">0</span> TL</strong>
+                </div>
+                <div>
+                    <h4>Giderler (Faturalar + Genel + Kart)</h4>
+                    <div id="gider-inputs"></div>
+                    <strong>Toplam Gider (Ebitda için): <span id="total-expense">0</span> TL</strong>
+                </div>
             </div>
-            
-            <div class="markets-grid">
-                <!-- Kripto Piyasaları -->
-                <div class="market-category">
-                    <h3 class="category-title"><i class="fas fa-coins"></i> Kripto Paralar</h3>
-                    <div class="assets-grid">
-                        <a href="chart.html?symbol=BTC/USDT" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon crypto">BTC</div>
-                                <div>
-                                    <h4>Bitcoin</h4>
-                                    <span class="asset-symbol">BTC/USDT</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">$42,150.25</div>
-                                <div class="change price-up">+2.45%</div>
-                            </div>
-                            <div class="signal-indicator buy"></div>
-                        </a>
-                        
-                        <a href="chart.html?symbol=ETH/USDT" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon crypto">ETH</div>
-                                <div>
-                                    <h4>Ethereum</h4>
-                                    <span class="asset-symbol">ETH/USDT</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">$2,850.75</div>
-                                <div class="change price-up">+1.89%</div>
-                            </div>
-                            <div class="signal-indicator buy"></div>
-                        </a>
-                        
-                        <a href="chart.html?symbol=AITECH/USDT" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon crypto">AI</div>
-                                <div>
-                                    <h4>AI Tech</h4>
-                                    <span class="asset-symbol">AITECH/USDT</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">$0.058</div>
-                                <div class="change price-up">+5.67%</div>
-                            </div>
-                            <div class="signal-indicator strong-buy"></div>
-                        </a>
-                        
-                        <!-- Diğer kriptolar -->
-                        <a href="chart.html?symbol=MANTA/USDT" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon crypto">MAN</div>
-                                <div>
-                                    <h4>Manta Network</h4>
-                                    <span class="asset-symbol">MANTA/USDT</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">$2.15</div>
-                                <div class="change price-down">-1.2%</div>
-                            </div>
-                            <div class="signal-indicator sell"></div>
-                        </a>
-                        
-                        <a href="chart.html?symbol=WLD/USDT" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon crypto">WLD</div>
-                                <div>
-                                    <h4>Worldcoin</h4>
-                                    <span class="asset-symbol">WLD/USDT</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">$6.42</div>
-                                <div class="change price-up">+3.1%</div>
-                            </div>
-                            <div class="signal-indicator hold"></div>
-                        </a>
-                        
-                        <a href="chart.html?symbol=RACA/USDT" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon crypto">RACA</div>
-                                <div>
-                                    <h4>RACA</h4>
-                                    <span class="asset-symbol">RACA/USDT</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">$0.0012</div>
-                                <div class="change price-up">+8.9%</div>
-                            </div>
-                            <div class="signal-indicator strong-buy"></div>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Emtia Piyasaları -->
-                <div class="market-category">
-                    <h3 class="category-title"><i class="fas fa-gem"></i> Emtia</h3>
-                    <div class="assets-grid">
-                        <a href="chart.html?symbol=ALTIN/TL" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon commodity">AU</div>
-                                <div>
-                                    <h4>Altın</h4>
-                                    <span class="asset-symbol">ALTIN/TL</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">₺2,850.75</div>
-                                <div class="change price-up">+0.89%</div>
-                            </div>
-                            <div class="signal-indicator sell"></div>
-                        </a>
-                        
-                        <a href="chart.html?symbol=GUMUS/TL" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon commodity">AG</div>
-                                <div>
-                                    <h4>Gümüş</h4>
-                                    <span class="asset-symbol">GÜMÜŞ/TL</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">₺85.42</div>
-                                <div class="change price-down">-0.45%</div>
-                            </div>
-                            <div class="signal-indicator hold"></div>
-                        </a>
-                        
-                        <a href="chart.html?symbol=BAKIR/TL" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon commodity">CU</div>
-                                <div>
-                                    <h4>Bakır</h4>
-                                    <span class="asset-symbol">BAKIR/TL</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">₺342.15</div>
-                                <div class="change price-up">+1.23%</div>
-                            </div>
-                            <div class="signal-indicator buy"></div>
-                        </a>
-                        
-                        <a href="chart.html?symbol=PLATIN/TL" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon commodity">PT</div>
-                                <div>
-                                    <h4>Platin</h4>
-                                    <span class="asset-symbol">PLATİN/TL</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">₺1,245.80</div>
-                                <div class="change price-up">+0.67%</div>
-                            </div>
-                            <div class="signal-indicator hold"></div>
-                        </a>
-                        
-                        <a href="chart.html?symbol=PALADYUM/TL" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon commodity">PD</div>
-                                <div>
-                                    <h4>Paladyum</h4>
-                                    <span class="asset-symbol">PALADYUM/TL</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">₺2,150.40</div>
-                                <div class="change price-down">-1.89%</div>
-                            </div>
-                            <div class="signal-indicator sell"></div>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Hisse Senetleri -->
-                <div class="market-category">
-                    <h3 class="category-title"><i class="fas fa-building"></i> Hisse Senetleri</h3>
-                    <div class="assets-grid">
-                        <a href="chart.html?symbol=TUPRS" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon stock">T</div>
-                                <div>
-                                    <h4>Tüpraş</h4>
-                                    <span class="asset-symbol">TUPRS</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">₺150.25</div>
-                                <div class="change price-up">+1.45%</div>
-                            </div>
-                            <div class="signal-indicator buy"></div>
-                        </a>
-                        
-                        <a href="chart.html?symbol=XU30" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon stock">B</div>
-                                <div>
-                                    <h4>BIST 30</h4>
-                                    <span class="asset-symbol">XU30</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">12,458.75</div>
-                                <div class="change price-up">+0.89%</div>
-                            </div>
-                            <div class="signal-indicator hold"></div>
-                        </a>
-                        
-                        <a href="chart.html?symbol=ZOREN" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon stock">Z</div>
-                                <div>
-                                    <h4>Zoren</h4>
-                                    <span class="asset-symbol">ZOREN</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">₺45.60</div>
-                                <div class="change price-down">-2.1%</div>
-                            </div>
-                            <div class="signal-indicator sell"></div>
-                        </a>
-                        
-                        <a href="chart.html?symbol=VESBE" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon stock">V</div>
-                                <div>
-                                    <h4>Vestel Beyaz</h4>
-                                    <span class="asset-symbol">VESBE</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">₺28.75</div>
-                                <div class="change price-up">+3.2%</div>
-                            </div>
-                            <div class="signal-indicator strong-buy"></div>
-                        </a>
-                        
-                        <a href="chart.html?symbol=MIATEK" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon stock">M</div>
-                                <div>
-                                    <h4>Miatek</h4>
-                                    <span class="asset-symbol">MIATEK</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">₺15.40</div>
-                                <div class="change price-up">+1.8%</div>
-                            </div>
-                            <div class="signal-indicator buy"></div>
-                        </a>
-                        
-                        <a href="chart.html?symbol=ISMEN" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon stock">İ</div>
-                                <div>
-                                    <h4>İş Menkul</h4>
-                                    <span class="asset-symbol">ISMEN</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">₺9.85</div>
-                                <div class="change price-down">-0.5%</div>
-                            </div>
-                            <div class="signal-indicator hold"></div>
-                        </a>
-                        
-                        <a href="chart.html?symbol=REEDR" class="asset-card">
-                            <div class="asset-info">
-                                <div class="asset-icon stock">R</div>
-                                <div>
-                                    <h4>Reeder</h4>
-                                    <span class="asset-symbol">REEDR</span>
-                                </div>
-                            </div>
-                            <div class="asset-price">
-                                <div class="price">₺6.90</div>
-                                <div class="change price-up">+4.5%</div>
-                            </div>
-                            <div class="signal-indicator strong-buy"></div>
-                        </a>
-                    </div>
-                </div>
+            <div class="neu-card" style="background: #2c3e50; color: white; margin-top:20px;">
+                <h3>EBITDA: <span id="ebitda-val">0</span> TL</h3>
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Özellikler Bölümü -->
-    <section class="features-section">
-        <div class="container">
-            <div class="section-header">
-                <h2><i class="fas fa-star"></i> Platform Özellikleri</h2>
-                <p class="section-subtitle">Profesyonel yatırım araçları</p>
-            </div>
-            
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3>Gerçek Zamanlı Veri</h3>
-                    <p>Canlı piyasa verileri ve anlık güncellemeler</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-area"></i>
-                    </div>
-                    <h3>Detaylı Teknik Analiz</h3>
-                    <p>50+ teknik gösterge ve çizim araçları</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-bell"></i>
-                    </div>
-                    <h3>Akıllı Alarm Sistemi</h3>
-                    <p>Özelleştirilebilir fiyat ve sinyal alarmları</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>Mobil Uyumlu</h3>
-                    <p>Tüm cihazlardan erişim ve takip</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Güvenli Platform</h3>
-                    <p>Bankalar seviyesinde güvenlik</p>
-                </div>
-                
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-file-export"></i>
-                    </div>
-                    <h3>Raporlama</h3>
-                    <p>Excel, PDF ve CSV olarak veri dışa aktarma</p>
-                </div>
-            </div>
+    <div id="analysis-page" class="page-section">
+        <div class="neu-card">
+            <h3>Gelişmiş Teknik Analiz (TradingView)</h3>
+            <p>RSI, MA50, MA200 ve Robot Sinyalleri Aktif</p>
+            <div id="advanced-analysis-container" style="height: 700px;"></div>
         </div>
-    </section>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>YatırımPro</h4>
-                    <p>Profesyonel yatırım analiz platformu</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-linkedin"></i></a>
-                        <a href="#"><i class="fab fa-github"></i></a>
-                        <a href="#"><i class="fab fa-telegram"></i></a>
-                    </div>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Piyasalar</h4>
-                    <a href="#">Kripto Paralar</a>
-                    <a href="#">Hisse Senetleri</a>
-                    <a href="#">Döviz</a>
-                    <a href="#">Emtia</a>
-                    <a href="#">Fonlar</a>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Araçlar</h4>
-                    <a href="#">Teknik Analiz</a>
-                    <a href="#">Portföy Takip</a>
-                    <a href="#">Alarm Sistemi</a>
-                    <a href="#">Eğitim</a>
-                    <a href="#">Raporlar</a>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Destek</h4>
-                    <a href="#">Yardım Merkezi</a>
-                    <a href="#">İletişim</a>
-                    <a href="#">SSS</a>
-                    <a href="#">Kullanım Koşulları</a>
-                    <a href="#">Gizlilik Politikası</a>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2024 YatırımPro. Tüm hakları saklıdır.</p>
-                <p class="disclaimer">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    Yatırım tavsiyesi değildir. Piyasa verileri gecikmeli olabilir.
-                </p>
-            </div>
-        </div>
-    </footer>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script>
+        // Sayfa Değiştirme Fonksiyonu
+        function showPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            if(pageId === 'analysis-page') loadTechnicalAnalysis();
+        }
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="script.js"></script>
+        // Canlı Ticker Listesi
+        const symbols = [
+            { name: "Altın/TL", sym: "FX_IDC:XAUTRYG" },
+            { name: "Gümüş/TL", sym: "FX_IDC:XAGTRYG" },
+            { name: "Dolar/TL", sym: "FX_IDC:USDTRY" },
+            { name: "Euro/TL", sym: "FX_IDC:EURTRY" },
+            { name: "BTC/USD", sym: "BITSTAMP:BTCUSD" },
+            { name: "BIST 100", sym: "BIST:XU100" }
+        ];
+
+        function initTickers() {
+            const grid = document.getElementById('ticker-grid');
+            symbols.forEach(s => {
+                const div = document.createElement('div');
+                div.className = 'neu-card price-item';
+                div.innerHTML = `<h4>${s.name}</h4><span>Tıkla Gör</span>`;
+                div.onclick = () => loadChart(s.sym, s.name);
+                grid.appendChild(div);
+            });
+        }
+
+        // Grafik Yükleme (TradingView)
+        function loadChart(symbol, label) {
+            document.getElementById('chart-title').innerText = label + " - Canlı Grafik";
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": symbol,
+                "interval": "15",
+                "timezone": "Europe/Istanbul",
+                "theme": "light",
+                "style": "1",
+                "locale": "tr",
+                "toolbar_bg": "#f1f3f6",
+                "enable_publishing": false,
+                "hide_side_toolbar": false,
+                "allow_symbol_change": true,
+                "container_id": "chart-container"
+            });
+        }
+
+        // Teknik Analiz Al-Sat Robotu Widget
+        function loadTechnicalAnalysis() {
+            new TradingView.widget({
+                "width": "100%",
+                "height": 700,
+                "symbol": "BINANCE:BTCUSDT",
+                "interval": "1H",
+                "timezone": "Europe/Istanbul",
+                "theme": "light",
+                "style": "1",
+                "locale": "tr",
+                "container_id": "advanced-analysis-container",
+                "studies": [
+                    "RSI@tv-basicstudies",
+                    "MASimple@tv-basicstudies", // MA50
+                    "MASimple@tv-basicstudies"  // MA200
+                ]
+            });
+        }
+
+        // Bütçe Hesaplama Dinamikleri
+        function initBudget() {
+            const gIn = document.getElementById('gelir-inputs');
+            const expIn = document.getElementById('gider-inputs');
+            for(let i=1; i<=5; i++) {
+                gIn.innerHTML += `<input type="number" class="inc-v" placeholder="Gelir Kalemi ${i} (TL)" oninput="calc()">`;
+                expIn.innerHTML += `<input type="number" class="exp-v" placeholder="Gider Kalemi ${i} (TL)" oninput="calc()">`;
+            }
+        }
+
+        function calc() {
+            let inc = [...document.querySelectorAll('.inc-v')].reduce((a,b) => a + (Number(b.value)||0), 0);
+            let exp = [...document.querySelectorAll('.exp-v')].reduce((a,b) => a + (Number(b.value)||0), 0);
+            document.getElementById('total-income').innerText = inc;
+            document.getElementById('total-expense').innerText = exp;
+            document.getElementById('ebitda-val').innerText = inc - exp;
+        }
+
+        // Zaman Güncelleme
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('date-time').innerText = now.toLocaleString('tr-TR');
+        }, 1000);
+
+        // Başlangıç
+        window.onload = () => {
+            initTickers();
+            initBudget();
+            loadChart("FX_IDC:XAUTRYG", "Altın/TL");
+        };
+    </script>
 </body>
 </html>
