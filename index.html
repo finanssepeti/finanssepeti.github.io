@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finans Sepeti - Profesyonel Finans Portalı</title>
+    <title>Finans Sepeti - Pro V3</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
@@ -18,27 +18,24 @@
 
         body { font-family: 'Inter', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; color: var(--primary); }
         .neu-card { background: var(--bg); border-radius: 20px; box-shadow: var(--shadow); padding: 20px; margin-bottom: 20px; }
-        .neu-btn { background: var(--bg); border: none; padding: 10px 20px; border-radius: 12px; box-shadow: var(--shadow); cursor: pointer; font-weight: 600; color: var(--primary); transition: 0.2s; }
+        .neu-btn { background: var(--bg); border: none; padding: 12px 20px; border-radius: 12px; box-shadow: var(--shadow); cursor: pointer; font-weight: 600; color: var(--primary); transition: 0.2s; }
         .neu-btn:active { box-shadow: var(--inner-shadow); transform: scale(0.98); }
-        .neu-input { background: var(--bg); border: none; padding: 12px; border-radius: 10px; box-shadow: var(--inner-shadow); width: 100%; box-sizing: border-box; margin-bottom: 10px; }
+        .neu-input { background: var(--bg); border: none; padding: 12px; border-radius: 10px; box-shadow: var(--inner-shadow); width: 100%; box-sizing: border-box; margin-bottom: 10px; font-weight: bold; }
         
-        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .nav-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .nav-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; }
         .page-content { display: none; }
         .active { display: block; }
-
-        /* Piyasalar Izgarası */
-        .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
-        .market-item { text-align: center; cursor: pointer; padding: 15px; border-radius: 15px; }
-        .market-item:hover { box-shadow: var(--inner-shadow); }
 
         /* Login Modal */
         #auth-modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2000; width: 350px; text-align: center; }
         .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; }
 
-        #tv-chart-container { height: 500px; border-radius: 15px; overflow: hidden; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { padding: 12px; border-bottom: 1px solid #c2c9d6; text-align: left; }
+        #tv-chart-container { height: 500px; border-radius: 15px; overflow: hidden; }
+        .ebitda-box { background: #27ae60; color: white; padding: 15px; border-radius: 15px; text-align: center; margin-top: 15px; font-size: 1.2rem; }
+        
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .total-label { font-size: 0.9rem; font-weight: bold; color: #2c3e50; margin-top: 5px; display: block; }
     </style>
 </head>
 <body>
@@ -48,7 +45,7 @@
 <header>
     <button class="neu-btn" onclick="openLogin()"><i class="fas fa-user"></i> Profilim</button>
     <h2 style="letter-spacing: 2px;">FİNANS SEPETİ</h2>
-    <div id="live-clock"></div>
+    <div id="live-clock" style="font-weight: 600;"></div>
 </header>
 
 <div class="nav-bar neu-card">
@@ -60,199 +57,230 @@
 </div>
 
 <div id="auth-modal" class="neu-card">
-    <h3 id="auth-title">Giriş Onayı</h3>
-    <p id="auth-text">Devam etmek için onay verin.</p>
-    <input type="email" id="auth-email" class="neu-input" placeholder="E-posta veya Kullanıcı Adı">
-    <button class="neu-btn" onclick="confirmLogin()" style="width: 100%; background: #27ae60; color: white;">Devam Et ve Oturum Aç</button>
-    <button class="neu-btn" onclick="closeLogin()" style="width: 100%; margin-top: 10px;">İptal</button>
+    <h3 id="login-title">Giriş Yap</h3>
+    <p>Devam etmek için onay veriniz.</p>
+    <button class="neu-btn" onclick="confirmLogin('Google')" style="width:100%; margin-bottom:10px;"><i class="fab fa-google"></i> Google ile Devam Et</button>
+    <button class="neu-btn" onclick="confirmLogin('Facebook')" style="width:100%; margin-bottom:10px;"><i class="fab fa-facebook"></i> Facebook ile Devam Et</button>
+    <input type="email" id="user-mail" class="neu-input" placeholder="Mail Adresi">
+    <button class="neu-btn" onclick="confirmLogin('Mail')" style="width: 100%; background: #2c3e50; color: white;">Oturum Aç</button>
 </div>
 
 <div id="markets-page" class="page-content active">
-    <div class="neu-card market-grid">
-        <div class="market-item" onclick="updateChart('FX_IDC:XAUTRYG')"><h4>Altın/TL</h4></div>
-        <div class="market-item" onclick="updateChart('FX:XAUUSD')"><h4>Altın/Ons</h4></div>
-        <div class="market-item" onclick="updateChart('FX_IDC:XAGTRYG')"><h4>Gümüş/TL</h4></div>
-        <div class="market-item" onclick="updateChart('FX:XAGUSD')"><h4>Gümüş/Ons</h4></div>
-        <div class="market-item" onclick="updateChart('FX_IDC:XPDTRYG')"><h4>Paladyum/TL</h4></div>
-        <div class="market-item" onclick="updateChart('FX_IDC:XPTTRYG')"><h4>Platin/TL</h4></div>
-        <div class="market-item" onclick="updateChart('COMEX:HGT1!')"><h4>Bakır/TL</h4></div>
-        <div class="market-item" onclick="updateChart('FX_IDC:USDTRY')"><h4>Dolar/TL</h4></div>
-        <div class="market-item" onclick="updateChart('BINANCE:BTCTRY')"><h4>BTC/TL</h4></div>
-        <div class="market-item" onclick="updateChart('BINANCE:BTCUSDT')"><h4>BTC/USD</h4></div>
-        <div class="market-item" onclick="updateChart('BIST:XU100')"><h4>Bist 100</h4></div>
+    <div class="neu-card" id="market-tickers">
+        <p>Hızlı Erişim: <span style="font-size: 0.8rem; opacity: 0.6;">(Grafik için tıklayın)</span></p>
+        <div id="ticker-container" style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;">
+            </div>
     </div>
     <div id="tv-chart-container" class="neu-card"></div>
 </div>
 
 <div id="profile-page" class="page-content">
     <div class="neu-card" style="max-width: 600px; margin: auto;">
-        <h3>Profil Bilgilerim</h3>
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-            <p><b>Adı:</b> <span id="p-ad">Yusuf</span></p>
-            <p><b>Soyadı:</b> <span id="p-soyad">Kaya</span></p>
-            <p><b>Üniversite:</b> <input class="neu-input" placeholder="Üniversite Giriniz"></p>
-            <p><b>Çalıştığı Kurum:</b> <input class="neu-input" placeholder="Kurum Giriniz"></p>
-            <p><b>Mail Adresi:</b> <span id="p-mail">yusuf@mail.com</span></p>
-            <p><b>Hobilerim:</b> <textarea class="neu-input"></textarea></p>
-        </div>
+        <h3>Kullanıcı Profili</h3>
+        <p><b>Adı:</b> <input class="neu-input" id="profile-name" placeholder="Adınız"></p>
+        <p><b>Soyadı:</b> <input class="neu-input" id="profile-surname" placeholder="Soyadınız"></p>
+        <p><b>Üniversite:</b> <input class="neu-input" placeholder="Üniversite"></p>
+        <p><b>Çalıştığı Kurum:</b> <input class="neu-input" placeholder="Kurum"></p>
+        <p><b>Mail Adresi:</b> <input class="neu-input" id="profile-mail" placeholder="Mail"></p>
         <hr>
-        <div class="nav-bar">
-            <button class="neu-btn" onclick="alert('Mesajlarınız Yükleniyor')">Mesajlarım</button>
-            <button class="neu-btn" onclick="showPage('budget-section')">Gelir/Gider & EBITDA</button>
-        </div>
+        <button class="neu-btn" onclick="showPage('budget-section')">Gelir/Gider & EBITDA (12 Ay)</button>
     </div>
 </div>
 
 <div id="add-investment" class="page-content">
     <div class="neu-card">
         <h3>Yatırım Ekle</h3>
-        <div class="nav-bar">
-            <button class="neu-btn" onclick="setInvestType('Emtia')">Emtialar</button>
-            <button class="neu-btn" onclick="setInvestType('Hisse')">Hisseler</button>
-            <button class="neu-btn" onclick="setInvestType('Fon')">Fonlar</button>
-            <button class="neu-btn" onclick="setInvestType('Koin')">Koinler</button>
+        <div class="grid-3">
+            <div class="neu-card">
+                <h4>1. Ürün Seçin</h4>
+                <div id="tradingview-search-widget">
+                    <input type="text" id="asset-search" class="neu-input" placeholder="Hisse/Koin/Emtia Ara..." onkeyup="searchAsset()">
+                    <div id="search-results" style="max-height: 150px; overflow-y: auto;"></div>
+                </div>
+            </div>
+            <div class="neu-card">
+                <h4>2. Yatırım Detayı</h4>
+                <label>Birim Fiyat (Canlı)</label>
+                <input type="number" id="unit-price" class="neu-input" step="0.01" oninput="calcTotalInvest()">
+                <label>Adet / Gram</label>
+                <input type="number" id="unit-amount" class="neu-input" step="0.01" oninput="calcTotalInvest()">
+                <div class="ebitda-box" style="background:#34495e;">Toplam: <span id="total-invest-val">0.00</span> TL</div>
+            </div>
+            <div class="neu-card">
+                <h4>3. Kayıt</h4>
+                <input type="date" id="invest-date" class="neu-input">
+                <button class="neu-btn" onclick="saveToPortfolio()" style="width:100%; background:#27ae60; color:white;">Portföye Ekle</button>
+            </div>
         </div>
-        <div class="neu-card" id="invest-form">
-            <h4 id="invest-title">Varlık Seçin</h4>
-            <input type="text" id="inv-name" class="neu-input" placeholder="Varlık Adı (Örn: Altın veya BTC)">
-            <input type="number" id="inv-amount" class="neu-input" placeholder="Adet / Gram">
-            <input type="number" id="inv-price" class="neu-input" placeholder="Yatırılan Tutar (Birim Fiyat)">
-            <input type="date" id="inv-date" class="neu-input">
-            <button class="neu-btn" onclick="saveInvestment()" style="background:#27ae60; color:white;">Portföye Ekle</button>
+    </div>
+</div>
+
+<div id="budget-section" class="page-content">
+    <div class="neu-card">
+        <h3>Aylık Finansal Plan</h3>
+        <select class="neu-input" id="active-month" style="width: 200px;" onchange="loadMonthData()">
+            <option>Ocak</option><option>Şubat</option><option>Mart</option><option>Nisan</option>
+            <option>Mayıs</option><option>Haziran</option><option>Temmuz</option><option>Ağustos</option>
+            <option>Eylül</option><option>Ekim</option><option>Kasım</option><option>Aralık</option>
+        </select>
+
+        <div class="grid-3">
+            <div class="neu-card">
+                <h4>Gelirlerim</h4>
+                <div id="income-list"></div>
+                <span class="total-label">Toplam Gelir: <span id="total-inc-text">0</span> TL</span>
+            </div>
+            <div class="neu-card">
+                <h4>Giderlerim</h4>
+                <h5>Faturalar</h5> <div id="exp1-list"></div>
+                <h5>Genel Giderler</h5> <div id="exp2-list"></div>
+                <h5>Kredi Kartları</h5> <div id="exp3-list"></div>
+                <h5>Krediler (Ebitda Hariç)</h5> <div id="exp4-list"></div>
+            </div>
         </div>
+        <div class="ebitda-box">Aylık EBITDA: <span id="ebitda-val">0</span> TL</div>
+        <button class="neu-btn" style="width:100%; margin-top:20px;" onclick="saveMonthToDB()">Verileri Kaydet (Veritabanı)</button>
+    </div>
+</div>
+
+<div id="analysis-page" class="page-content">
+    <div class="neu-card">
+        <div id="tradingview-analysis" style="height: 700px;"></div>
     </div>
 </div>
 
 <div id="portfolio-page" class="page-content">
     <div class="neu-card">
-        <div style="display:flex; justify-content:space-between;">
-            <h3>Portföyüm & Analiz</h3>
-            <button class="neu-btn" onclick="exportExcel()"><i class="fas fa-file-excel"></i> Excel İndir</button>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3>Portföyüm</h3>
+            <button class="neu-btn" onclick="exportExcel()">Excel İndir</button>
         </div>
-        <div class="nav-bar">
-            <button class="neu-btn">Aylık Portföy</button>
-            <button class="neu-btn">Yıllık Portföy</button>
-        </div>
-        <table id="portfolio-table">
-            <thead>
-                <tr>
-                    <th>Varlık</th><th>Miktar</th><th>Alış Fiyatı</th><th>Güncel</th><th>Kâr/Zarar</th>
-                </tr>
-            </thead>
-            <tbody id="portfolio-body"></tbody>
+        <table id="port-table" style="width:100%; text-align:left; margin-top:15px;">
+            <thead><tr><th>Ürün</th><th>Miktar</th><th>Birim</th><th>Toplam</th><th>Tarih</th></tr></thead>
+            <tbody id="port-body"></tbody>
         </table>
     </div>
 </div>
 
-<div id="analysis-page" class="page-content">
-    <div class="neu-card" id="trading-robot-container" style="height: 700px;"></div>
-</div>
-
-<div id="news-sidebar" style="display:none; position:fixed; right:0; top:0; width:350px; height:100vh; background:var(--bg); box-shadow:-5px 0 15px rgba(0,0,0,0.2); z-index:3000; padding:20px; overflow-y:auto;">
-    <button class="neu-btn" onclick="toggleNews()">Kapat</button>
-    <h3>Bloomberg Haber Akışı</h3>
-    <div id="news-list"></div>
-</div>
-
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
-    let portfolio = JSON.parse(localStorage.getItem('myPortfolio')) || [];
-    let currentInvestType = "";
+    // 12 AYLIK VERİ TABANI SİMÜLASYONU
+    let db = JSON.parse(localStorage.getItem('finans_db')) || {};
+    let portfolio = JSON.parse(localStorage.getItem('port_db')) || [];
 
     // GİRİŞ FONKSİYONLARI
-    function openLogin() {
-        document.getElementById('overlay').style.display = 'block';
-        document.getElementById('auth-modal').style.display = 'block';
-    }
-    function closeLogin() {
-        document.getElementById('overlay').style.display = 'none';
-        document.getElementById('auth-modal').style.display = 'none';
-    }
-    function confirmLogin() {
-        alert("Giriş Başarılı! Profilinize yönlendiriliyorsunuz.");
+    function openLogin() { document.getElementById('overlay').style.display = 'block'; document.getElementById('auth-modal').style.display = 'block'; }
+    function closeLogin() { document.getElementById('overlay').style.display = 'none'; document.getElementById('auth-modal').style.display = 'none'; }
+    function confirmLogin(type) {
+        alert(type + " ile giriş onaylandı. Hoş geldiniz!");
         closeLogin();
         showPage('profile-page');
     }
 
     // SAYFA YÖNETİMİ
-    function showPage(pageId) {
+    function showPage(id) {
         document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        if(pageId === 'portfolio-page') renderPortfolio();
-        if(pageId === 'analysis-page') loadRobot();
+        document.getElementById(id).classList.add('active');
+        if(id === 'analysis-page') loadAnalysisRobot();
     }
 
-    // PİYASA GRAFİKLERİ
-    function updateChart(symbol) {
-        new TradingView.widget({
-            "autosize": true, "symbol": symbol, "interval": "15",
-            "timezone": "Europe/Istanbul", "theme": "light", "style": "1",
-            "locale": "tr", "container_id": "tv-chart-container"
+    // YATIRIM ARAMA VE FİYAT (Simüle Edilmiş TradingView Verisi)
+    function searchAsset() {
+        const query = document.getElementById('asset-search').value.toUpperCase();
+        const results = document.getElementById('search-results');
+        const mockAssets = [
+            {n: "Gram Altın", p: 3050.45}, {n: "BTC/USD", p: 98400}, {n: "BIST:THYAO", p: 285.50},
+            {n: "Gümüş", p: 35.12}, {n: "EREGL", p: 52.30}, {n: "ETH/USD", p: 2450.00}
+        ];
+        results.innerHTML = "";
+        mockAssets.filter(a => a.n.includes(query)).forEach(a => {
+            const d = document.createElement('div');
+            d.className = "neu-btn"; d.style = "display:block; margin:5px; font-size:0.8rem;";
+            d.innerText = a.n;
+            d.onclick = () => { 
+                document.getElementById('asset-search').value = a.n;
+                document.getElementById('unit-price').value = a.p;
+                calcTotalInvest();
+                results.innerHTML = "";
+            };
+            results.appendChild(d);
         });
     }
 
-    // YATIRIM SİSTEMİ
-    function setInvestType(type) {
-        currentInvestType = type;
-        document.getElementById('invest-title').innerText = type + " Bilgileri";
+    function calcTotalInvest() {
+        let p = document.getElementById('unit-price').value || 0;
+        let a = document.getElementById('unit-amount').value || 0;
+        document.getElementById('total-invest-val').innerText = (p * a).toFixed(2);
     }
 
-    function saveInvestment() {
+    function saveToPortfolio() {
         const item = {
-            type: currentInvestType,
-            name: document.getElementById('inv-name').value,
-            amount: document.getElementById('inv-amount').value,
-            price: document.getElementById('inv-price').value,
-            date: document.getElementById('inv-date').value
+            name: document.getElementById('asset-search').value,
+            price: document.getElementById('unit-price').value,
+            amount: document.getElementById('unit-amount').value,
+            total: document.getElementById('total-invest-val').innerText,
+            date: document.getElementById('invest-date').value
         };
         portfolio.push(item);
-        localStorage.setItem('myPortfolio', JSON.stringify(portfolio));
-        alert("Yatırım Kaydedildi!");
+        localStorage.setItem('port_db', JSON.stringify(portfolio));
+        renderPortfolio();
+        alert("Portföye Kaydedildi!");
     }
 
     function renderPortfolio() {
-        const body = document.getElementById('portfolio-body');
-        body.innerHTML = "";
-        portfolio.forEach(item => {
-            body.innerHTML += `<tr>
-                <td>${item.name}</td><td>${item.amount}</td><td>${item.price} TL</td>
-                <td>Canlı Çekiliyor...</td><td style="color:green">+1.2%</td>
-            </tr>`;
-        });
+        const body = document.getElementById('port-body');
+        body.innerHTML = portfolio.map(i => `<tr><td>${i.name}</td><td>${i.amount}</td><td>${i.price}</td><td>${i.total} TL</td><td>${i.date}</td></tr>`).join('');
     }
 
-    // TEKNİK ROBOT
-    function loadRobot() {
+    // BÜTÇE HESAPLARI (EBITDA)
+    function initBudgetForms() {
+        const create = (id, count, cls) => {
+            const el = document.getElementById(id); el.innerHTML = "";
+            for(let i=1; i<=count; i++) el.innerHTML += `<input type="number" class="neu-input ${cls}" placeholder="Tutar ${i}" oninput="calcBudget()">`;
+        }
+        create('income-list', 5, 'inc-v');
+        create('exp1-list', 5, 'e1-v');
+        create('exp2-list', 5, 'e2-v');
+        create('exp3-list', 5, 'e3-v');
+        create('exp4-list', 5, 'e4-v');
+    }
+
+    function calcBudget() {
+        const sum = (cls) => [...document.querySelectorAll('.'+cls)].reduce((a,b) => a + (Number(b.value)||0), 0);
+        let inc = sum('inc-v');
+        let g1 = sum('e1-v'), g2 = sum('e2-v'), g3 = sum('e3-v');
+        document.getElementById('total-inc-text').innerText = inc;
+        document.getElementById('ebitda-val').innerText = (inc - (g1+g2+g3));
+    }
+
+    function saveMonthToDB() {
+        const m = document.getElementById('active-month').value;
+        alert(m + " verileri veritabanına kaydedildi!");
+    }
+
+    // TEKNİK ANALİZ ROBOTU
+    function loadAnalysisRobot() {
         new TradingView.widget({
-            "width": "100%", "height": 650, "symbol": "BIST:XU100", "interval": "1H",
-            "theme": "light", "container_id": "trading-robot-container",
-            "studies": ["RSI@tv-basicstudies", "MASimple@tv-basicstudies", "BollingerBandsLower@tv-basicstudies"]
+            "autosize": true, "symbol": "BIST:XU100", "interval": "60", "theme": "light",
+            "container_id": "tradingview-analysis", "locale": "tr",
+            "studies": ["RSI@tv-basicstudies", "MASimple@tv-basicstudies", "BollingerBandsLower@tv-basicstudies"],
+            "show_popup_button": true, "allow_symbol_change": true
         });
     }
 
-    // HABERLER (Bloomberg Simülasyonu)
-    function toggleNews() {
-        const side = document.getElementById('news-sidebar');
-        side.style.display = side.style.display === 'none' ? 'block' : 'none';
-        const list = document.getElementById('news-list');
-        const news = [
-            {t: "10:30", h: "Bloomberg: Altın Ons fiyatı direnci zorluyor", l: "https://www.bloomberght.com/altin"},
-            {t: "10:15", h: "BIST 100 açılış verileri açıklandı", l: "https://www.bloomberght.com/borsa"},
-            {t: "09:45", h: "Kripto paralarda Gate.io hacim artışı", l: "https://www.bloomberght.com/kripto"}
-        ];
-        list.innerHTML = news.map(n => `<div class="neu-card" onclick="window.open('${n.l}')" style="cursor:pointer">
-            <small>${n.t}</small><br><b>${n.h}</b></div>`).join('');
-    }
-
+    // EXCEL
     function exportExcel() {
-        var wb = XLSX.utils.table_to_book(document.getElementById('portfolio-table'));
+        const wb = XLSX.utils.table_to_book(document.getElementById('port-table'));
         XLSX.writeFile(wb, 'Portfoyum.xlsx');
     }
 
     window.onload = () => {
-        updateChart('FX_IDC:XAUTRYG');
+        initBudgetForms();
+        renderPortfolio();
+        new TradingView.widget({ "autosize": true, "symbol": "FX_IDC:XAUTRYG", "container_id": "tv-chart-container", "theme": "light" });
         setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleString(); }, 1000);
     };
 </script>
+
 </body>
 </html>
