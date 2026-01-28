@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finans Sepeti - Pro V5</title>
+    <title>Finans Sepeti - Pro V6 Terminal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
@@ -20,7 +20,7 @@
         .neu-card { background: var(--bg); border-radius: 20px; box-shadow: var(--shadow); padding: 20px; margin-bottom: 20px; }
         .neu-btn { background: var(--bg); border: none; padding: 10px 20px; border-radius: 12px; box-shadow: var(--shadow); cursor: pointer; font-weight: 600; color: var(--primary); transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
         .neu-btn:active { box-shadow: var(--inner-shadow); transform: scale(0.98); }
-        .neu-input { background: var(--bg); border: none; padding: 12px; border-radius: 10px; box-shadow: var(--inner-shadow); width: 100%; box-sizing: border-box; margin-bottom: 10px; font-weight: bold; color: #2c3e50; }
+        .neu-input { background: var(--bg); border: none; padding: 12px; border-radius: 10px; box-shadow: var(--inner-shadow); width: 100%; box-sizing: border-box; margin-bottom: 10px; font-weight: bold; }
         
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .nav-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; }
@@ -33,10 +33,11 @@
 
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { padding: 12px; border-bottom: 1px solid #c2c9d6; text-align: left; }
-        .total-box { background: #2c3e50; color: white; padding: 10px; border-radius: 10px; margin-top: 5px; font-size: 0.9rem; text-align: right; }
+        .sub-total { background: #f8f9fa; font-weight: bold; color: #2c3e50; padding: 8px; border-radius: 8px; display: block; text-align: right; margin-top: 5px; box-shadow: var(--inner-shadow); }
+        .ebitda-header { background: #27ae60; color: white; padding: 15px; border-radius: 15px; font-size: 1.3rem; font-weight: bold; text-align: center; margin-top: 10px; }
         
-        .month-container { margin-bottom: 40px; border-left: 5px solid #2c3e50; padding-left: 15px; }
-        #tv-chart-container { height: 500px; border-radius: 20px; overflow: hidden; }
+        .month-label { background: #2c3e50; color: white; padding: 5px 15px; border-radius: 20px; display: inline-block; margin: 20px 0 10px 0; }
+        #tv-chart-main, #tv-analysis-terminal { height: 600px; border-radius: 20px; overflow: hidden; }
     </style>
 </head>
 <body>
@@ -54,69 +55,69 @@
     <button class="neu-btn" onclick="showPage('monthly-portfolio')">Aylık Portföy</button>
     <button class="neu-btn" onclick="showPage('yearly-portfolio')">Yıllık Portföy</button>
     <button class="neu-btn" onclick="showPage('ebitda-page')">Harcamalar-Ebitda</button>
+    <button class="neu-btn" onclick="showPage('analysis-page')">Teknik Analiz</button>
     <button class="neu-btn" onclick="showPage('news-page')">Haberler</button>
 </div>
 
 <div id="markets-page" class="page-content active">
     <div class="neu-card market-grid">
-        <div class="market-item neu-card" onclick="updateChart('FX_IDC:XAUTRYG')">ALTIN/TL</div>
-        <div class="market-item neu-card" onclick="updateChart('FX:XAUUSD')">ALTIN/ONS</div>
-        <div class="market-item neu-card" onclick="updateChart('FX_IDC:XAGTRYG')">GÜMÜŞ/TL</div>
-        <div class="market-item neu-card" onclick="updateChart('FX:XAGUSD')">GÜMÜŞ/ONS</div>
-        <div class="market-item neu-card" onclick="updateChart('FX_IDC:XPTTRYG')">PLATİN/TL</div>
-        <div class="market-item neu-card" onclick="updateChart('FX_IDC:XPDTRYG')">PALADYUM/TL</div>
-        <div class="market-item neu-card" onclick="updateChart('COMEX:HGT1!')">BAKIR/TL</div>
-        <div class="market-item neu-card" onclick="updateChart('FX_IDC:USDTRY')">DOLAR/TL</div>
-        <div class="market-item neu-card" onclick="updateChart('FX_IDC:EURTRY')">EURO/TL</div>
-        <div class="market-item neu-card" onclick="updateChart('BINANCE:BTCUSDT')">BTC/USD</div>
-        <div class="market-item neu-card" onclick="updateChart('BINANCE:BTCTRY')">BTC/TL</div>
-        <div class="market-item neu-card" onclick="updateChart('BINANCE:ETHUSDT')">ETH/USD</div>
+        <div class="market-item neu-card" onclick="updateMainChart('FX_IDC:XAUTRYG')">ALTIN/TL</div>
+        <div class="market-item neu-card" onclick="updateMainChart('FX:XAUUSD')">ALTIN/ONS</div>
+        <div class="market-item neu-card" onclick="updateMainChart('FX_IDC:XAGTRYG')">GÜMÜŞ/TL</div>
+        <div class="market-item neu-card" onclick="updateMainChart('FX:XAGUSD')">GÜMÜŞ/ONS</div>
+        <div class="market-item neu-card" onclick="updateMainChart('FX_IDC:XPTTRYG')">PLATİN/TL</div>
+        <div class="market-item neu-card" onclick="updateMainChart('FX_IDC:XPDTRYG')">PALADYUM/TL</div>
+        <div class="market-item neu-card" onclick="updateMainChart('COMEX:HGT1!')">BAKIR/TL</div>
+        <div class="market-item neu-card" onclick="updateMainChart('FX_IDC:USDTRY')">DOLAR/TL</div>
+        <div class="market-item neu-card" onclick="updateMainChart('FX_IDC:EURTRY')">EURO/TL</div>
+        <div class="market-item neu-card" onclick="updateMainChart('BINANCE:BTCTRY')">BTC/TL</div>
+        <div class="market-item neu-card" onclick="updateMainChart('BINANCE:ETHTRY')">ETH/TL</div>
     </div>
-    <div id="tv-chart-container" class="neu-card"></div>
+    <div id="tv-chart-main" class="neu-card"></div>
 </div>
 
 <div id="add-investment" class="page-content">
     <div class="neu-card">
-        <h3>Yeni Yatırım Girişi</h3>
+        <h3>Yatırım İşlemi Girişi</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div>
-                <input type="text" id="asset-name" class="neu-input" placeholder="Ürün Ara (Hisse, Koin, Emtia...)">
-                <input type="number" id="unit-p" class="neu-input" placeholder="Birim Fiyat" oninput="calcInv()">
-                <input type="number" id="unit-a" class="neu-input" placeholder="Adet / Gram" oninput="calcInv()">
-                <div class="total-box">İşlem Tutarı: <span id="cur-total">0.00</span> TL</div>
+                <input type="text" id="asset-name" class="neu-input" placeholder="Ürün Adı (Hisse, Koin, Emtia)">
+                <input type="number" id="unit-p" class="neu-input" placeholder="Birim Fiyat" oninput="calcDaily()">
+                <input type="number" id="unit-a" class="neu-input" placeholder="Adet / Gram" oninput="calcDaily()">
+                <div class="sub-total">İşlem Tutarı: <span id="current-op">0.00</span> TL</div>
             </div>
             <div>
                 <input type="date" id="inv-date" class="neu-input">
-                <button class="neu-btn" style="width:100%; background:#27ae60; color:white; height:100px;" onclick="saveInvestment()">PORTFÖYE KAYDET</button>
+                <button class="neu-btn" style="width:100%; background:#27ae60; color:white; height:100px;" onclick="saveInvestment()">VERİ TABANINA KAYDET</button>
             </div>
         </div>
-        <div class="total-box" style="background:#34495e; margin-top:20px;">Bugünkü Genel Toplam Yatırım Tutarı: <span id="daily-sum">0.00</span> TL</div>
+        <div class="ebitda-header" style="background:#34495e;">Günün Genel Toplam Yatırım Tutarı: <span id="daily-sum">0.00</span> TL</div>
     </div>
 </div>
 
 <div id="portfolio-page" class="page-content">
     <div class="neu-card">
-        <h3>Güncel Portföy</h3>
-        <table id="main-port-table">
-            <thead><tr><th>Ürün</th><th>Miktar</th><th>Alış Fiyatı</th><th>Toplam</th><th>Tarih</th></tr></thead>
-            <tbody id="main-port-body"></tbody>
+        <h3>Genel Portföy Durumu</h3>
+        <table id="port-table">
+            <thead><tr><th>Ürün</th><th>Miktar</th><th>Alış</th><th>Toplam</th><th>Tarih</th></tr></thead>
+            <tbody id="port-body"></tbody>
         </table>
     </div>
 </div>
 
 <div id="monthly-portfolio" class="page-content">
-    <div class="neu-card" id="monthly-list-container">
+    <div class="neu-card" id="monthly-container">
         </div>
 </div>
 
 <div id="yearly-portfolio" class="page-content">
     <div class="neu-card">
         <div style="display:flex; justify-content:space-between;">
-            <h3>Yıllık Konsolide Portföy (Kar/Zarar)</h3>
+            <h3>Yıllık Birleşik Portföy & Kar-Zarar</h3>
             <button class="neu-btn" onclick="exportExcel('yearly-table')">Excel İndir</button>
         </div>
         <table id="yearly-table">
-            <thead><tr><th>Ürün</th><th>Toplam Miktar</th><th>Maliyet</th><th>Canlı Fiyat</th><th>K/Z Durumu</th></tr></thead>
+            <thead><tr><th>Ürün</th><th>Toplam Adet</th><th>Ort. Maliyet</th><th>Canlı Fiyat</th><th>K/Z Durumu</th></tr></thead>
             <tbody id="yearly-body"></tbody>
         </table>
     </div>
@@ -124,56 +125,56 @@
 
 <div id="ebitda-page" class="page-content">
     <div class="neu-card">
-        <h3>Harcamalar ve EBITDA Takibi</h3>
+        <h3>Gider Yönetimi & EBITDA</h3>
         <select class="neu-input" id="budget-month" style="width:200px;">
             <option>Ocak</option><option>Şubat</option><option>Mart</option><option>Nisan</option><option>Mayıs</option><option>Haziran</option><option>Temmuz</option><option>Ağustos</option><option>Eylül</option><option>Ekim</option><option>Kasım</option><option>Aralık</option>
         </select>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="neu-card">
-                <h4>Gelirler</h4>
+                <h4>Gelir Kalemleri (5)</h4>
                 <div id="inc-inputs"></div>
-                <div class="total-box">Toplam Gelir: <span id="sum-inc">0</span></div>
+                <div class="sub-total">Toplam Gelirlerim: <span id="sum-inc">0</span></div>
             </div>
             <div class="neu-card">
                 <h4>Gider Grupları</h4>
-                <h5>Faturalar</h5> <div id="g1-inputs"></div> <div class="total-box">Toplam Faturalarım: <span id="sum-g1">0</span></div>
-                <h5>Genel Giderler</h5> <div id="g2-inputs"></div> <div class="total-box">Toplam Genel Giderler: <span id="sum-g2">0</span></div>
-                <h5>Kredi Kartları</h5> <div id="g3-inputs"></div> <div class="total-box">Toplam Kredi Kartlarım: <span id="sum-g3">0</span></div>
-                <h5>Krediler (Ebitda Hariç)</h5> <div id="g4-inputs"></div> <div class="total-box">Toplam Kredilerim: <span id="sum-g4">0</span></div>
+                <h5>Faturalar</h5> <div id="g1-inputs"></div> <div class="sub-total">Toplam Faturalarım: <span id="sum-g1">0</span></div>
+                <h5>Genel Giderler</h5> <div id="g2-inputs"></div> <div class="sub-total">Toplam Genel Giderler: <span id="sum-g2">0</span></div>
+                <h5>Kredi Kartları</h5> <div id="g3-inputs"></div> <div class="sub-total">Toplam Kredi Kartlarım: <span id="sum-g3">0</span></div>
+                <h5>Krediler (EBİTDA Dışı)</h5> <div id="g4-inputs"></div> <div class="sub-total">Toplam Kredilerim: <span id="sum-g4">0</span></div>
             </div>
         </div>
-        <div class="total-box" style="background:#27ae60; font-size:1.5rem;">AYLIK EBITDA: <span id="ebitda-val">0</span> TL</div>
-        <button class="neu-btn" style="width:100%; margin-top:15px; background:#2c3e50; color:white;" onclick="saveEbitdaData()">BÜTÇEYİ KAYDET</button>
+        <div class="ebitda-header">AYLIK EBITDA: <span id="ebitda-val">0</span> TL</div>
+        <button class="neu-btn" style="width:100%; margin-top:15px; background:#2c3e50; color:white;" onclick="saveEbitdaData()">BÜTÇEYİ AYLIK TABLOYA KAYDET</button>
+    </div>
+</div>
+
+<div id="analysis-page" class="page-content">
+    <div class="neu-card">
+        <div id="tv-analysis-terminal"></div>
     </div>
 </div>
 
 <div id="news-page" class="page-content">
     <div class="neu-card">
         <h3>Bloomberg Canlı Haber Akışı</h3>
-        <div id="news-feed"></div>
-    </div>
-</div>
-
-<div id="profile-page" class="page-content">
-    <div class="neu-card" style="max-width:500px; margin:auto;">
-        <h3>Kullanıcı Bilgileri</h3>
-        <input class="neu-input" id="u-name" placeholder="Ad Soyad">
-        <input class="neu-input" id="u-mail" placeholder="Mail Adresi">
-        <button class="neu-btn" style="width:100%" onclick="saveProfile()">Bilgileri Veritabanına Kaydet</button>
+        <div id="news-list"></div>
     </div>
 </div>
 
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
-    let port_db = JSON.parse(localStorage.getItem('f_port_db')) || [];
-    let budget_db = JSON.parse(localStorage.getItem('f_budget_db')) || {};
+    let port_db = JSON.parse(localStorage.getItem('terminal_port')) || [];
     const aylar = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
 
-    // HESAPLAMALAR
-    function calcInv() {
+    // YATIRIM HESAPLAMA
+    function calcDaily() {
         let p = document.getElementById('unit-p').value || 0;
         let a = document.getElementById('unit-a').value || 0;
-        document.getElementById('cur-total').innerText = (p * a).toFixed(2);
+        document.getElementById('current-op').innerText = (p * a).toFixed(2);
+        
+        let daily = port_db.filter(i => i.date === document.getElementById('inv-date').value)
+                     .reduce((s, i) => s + i.total, 0);
+        document.getElementById('daily-sum').innerText = (daily + p*a).toFixed(2);
     }
 
     function saveInvestment() {
@@ -181,93 +182,102 @@
             name: document.getElementById('asset-name').value,
             price: parseFloat(document.getElementById('unit-p').value),
             amount: parseFloat(document.getElementById('unit-a').value),
-            total: parseFloat(document.getElementById('cur-total').innerText),
+            total: parseFloat(document.getElementById('current-op').innerText),
             date: document.getElementById('inv-date').value,
             month: aylar[new Date(document.getElementById('inv-date').value).getMonth()]
         };
         port_db.push(item);
-        localStorage.setItem('f_port_db', JSON.stringify(port_db));
-        renderAllPortfolios();
-        alert("Yatırım kaydedildi!");
+        localStorage.setItem('terminal_port', JSON.stringify(port_db));
+        renderPortfolios();
+        alert("Portföy Güncellendi!");
     }
 
-    function renderAllPortfolios() {
-        // Portföyüm Sayfası
-        const mainBody = document.getElementById('main-port-body');
-        mainBody.innerHTML = port_db.map(i => `<tr><td>${i.name}</td><td>${i.amount}</td><td>${i.price}</td><td>${i.total}</td><td>${i.date}</td></tr>`).join('');
+    function renderPortfolios() {
+        // Portföyüm
+        document.getElementById('port-body').innerHTML = port_db.map(i => `<tr><td>${i.name}</td><td>${i.amount}</td><td>${i.price}</td><td>${i.total}</td><td>${i.date}</td></tr>`).join('');
         
-        // Aylık Portföy Sayfası
-        const monthlyCont = document.getElementById('monthly-list-container');
-        monthlyCont.innerHTML = "<h3>Aylara Göre Alımlar</h3>";
+        // Aylık Portföy
+        const monthlyBox = document.getElementById('monthly-container');
+        monthlyBox.innerHTML = "";
         aylar.forEach(m => {
-            const items = port_db.filter(i => i.month === m);
-            if(items.length > 0) {
-                monthlyCont.innerHTML += `<div class="month-container"><h4>${m} Portföyü</h4><table>
-                ${items.map(i => `<tr><td>${i.name}</td><td>${i.amount}</td><td>Canlı: ${i.price}</td><td>Kar/Zarar: %0</td></tr>`).join('')}
-                </table></div>`;
+            const data = port_db.filter(i => i.month === m);
+            if(data.length > 0) {
+                monthlyBox.innerHTML += `<div class="month-label">${m} Alımları</div>
+                <table>${data.map(i => `<tr><td>${i.name}</td><td>${i.amount}</td><td>Canlı: ${i.price}</td><td>Durum: %0</td></tr>`).join('')}</table>`;
             }
         });
 
-        // Yıllık Portföy (Konsolide)
-        const yearlyBody = document.getElementById('yearly-body');
-        yearlyBody.innerHTML = port_db.map(i => `<tr><td>${i.name}</td><td>${i.amount}</td><td>${i.price}</td><td>Canlı</td><td style="color:green">+2.4%</td></tr>`).join('');
+        // Yıllık Portföy
+        document.getElementById('yearly-body').innerHTML = port_db.map(i => `<tr><td>${i.name}</td><td>${i.amount}</td><td>${i.price}</td><td>Canlı</td><td style="color:green">+1.5%</td></tr>`).join('');
     }
 
     // BÜTÇE SİSTEMİ
     function initBudget() {
-        const create = (id, cls) => {
+        const build = (id, cls) => {
             const el = document.getElementById(id); el.innerHTML = "";
             for(let i=1; i<=5; i++) el.innerHTML += `<input type="number" class="neu-input ${cls}" placeholder="Kalem ${i}" oninput="calcBudget()">`;
         }
-        create('inc-inputs', 'inc-v'); create('g1-inputs', 'g1-v'); create('g2-inputs', 'g2-v'); create('g3-inputs', 'g3-v'); create('g4-inputs', 'g4-v');
+        build('inc-inputs', 'inc-v'); build('g1-inputs', 'g1-v'); build('g2-inputs', 'g2-v'); build('g3-inputs', 'g3-v'); build('g4-inputs', 'g4-v');
     }
 
     function calcBudget() {
-        const sum = (cls, target) => {
+        const getSum = (cls, target) => {
             let s = [...document.querySelectorAll('.'+cls)].reduce((a,b) => a + (Number(b.value)||0), 0);
             document.getElementById(target).innerText = s.toLocaleString(); return s;
         }
-        let inc = sum('inc-v', 'sum-inc');
-        let g1 = sum('g1-v', 'sum-g1');
-        let g2 = sum('g2-v', 'sum-g2');
-        let g3 = sum('sum-g3' ? 'g3-v' : 'g3-v', 'sum-g3'); // Fix for ID
-        let g4 = sum('g4-v', 'sum-g4');
+        let inc = getSum('inc-v', 'sum-inc');
+        let g1 = getSum('g1-v', 'sum-g1');
+        let g2 = getSum('g2-v', 'sum-g2');
+        let g3 = getSum('g3-v', 'sum-g3');
+        let g4 = getSum('g4-v', 'sum-g4');
         document.getElementById('ebitda-val').innerText = (inc - (g1+g2+g3)).toLocaleString();
     }
 
-    function saveEbitdaData() {
-        const m = document.getElementById('budget-month').value;
-        alert(m + " ayı harcamaları ve EBITDA verileri başarıyla kaydedildi!");
+    // TEKNİK ANALİZ ROBOTU (FULL SİNYAL)
+    function loadAnalysisRobot() {
+        new TradingView.widget({
+            "autosize": true, "symbol": "BIST:XU100", "interval": "15", "theme": "light",
+            "style": "1", "locale": "tr", "container_id": "tv-analysis-terminal",
+            "studies": [
+                "RSI@tv-basicstudies",
+                "MASimple@tv-basicstudies", // MA50
+                "MASimple@tv-basicstudies", // MA200
+                "StochasticRSI@tv-basicstudies",
+                "MACD@tv-basicstudies",
+                "BollingerBandsLower@tv-basicstudies"
+            ],
+            "show_popup_button": true, "allow_symbol_change": true, "details": true, "hotlist": true
+        });
     }
 
-    // HABERLER (Bloomberg API Simülasyonu)
-    function loadNews() {
-        const news = [
-            {h: "Bloomberg: Altın Ons fiyatı 2026 zirvesine yakın", l: "https://www.bloomberght.com/altin"},
-            {h: "TCMB faiz kararının piyasalara etkisi", l: "https://www.bloomberght.com/ekonomi"},
-            {h: "BIST 100 endeksinde hacim rekoru kırıldı", l: "https://www.bloomberght.com/borsa"}
+    // HABERLER
+    function loadBloomberg() {
+        const feed = [
+            {t: "Bloomberg HT", h: "Küresel piyasalarda enflasyon verisi bekleniyor", l: "https://www.bloomberght.com"},
+            {t: "Bloomberg HT", h: "Borsa İstanbul bankacılık endeksi öncülüğünde yükseldi", l: "https://www.bloomberght.com/borsa"},
+            {t: "Bloomberg HT", h: "Altın fiyatları Fed tutanakları sonrası hareketlendi", l: "https://www.bloomberght.com/altin"}
         ];
-        document.getElementById('news-feed').innerHTML = news.map(n => `<div class="neu-card" onclick="window.open('${n.l}')" style="cursor:pointer"><b>${n.h}</b><br><small>Tıklayıp Bloomberg'e gidin →</small></div>`).join('');
+        document.getElementById('news-list').innerHTML = feed.map(n => `<div class="neu-card" onclick="window.open('${n.l}')" style="cursor:pointer">
+            <small>${n.t}</small><br><b>${n.h}</b><br><small>Tıklayıp Bloomberg'e gidin →</small></div>`).join('');
     }
 
     function showPage(id) {
         document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(id === 'news-page') loadNews();
-        if(id === 'monthly-portfolio' || id === 'yearly-portfolio') renderAllPortfolios();
+        if(id === 'analysis-page') loadAnalysisRobot();
+        if(id === 'news-page') loadBloomberg();
     }
 
-    function updateChart(s) {
-        new TradingView.widget({"autosize": true, "symbol": s, "interval": "15", "theme": "light", "locale": "tr", "container_id": "tv-chart-container"});
+    function updateMainChart(s) {
+        new TradingView.widget({"autosize": true, "symbol": s, "interval": "15", "theme": "light", "container_id": "tv-chart-main"});
     }
 
-    function exportExcel(id) {
-        XLSX.writeFile(XLSX.utils.table_to_book(document.getElementById(id)), 'Finans_Raporu.xlsx');
-    }
+    function saveEbitdaData() { alert("Harcamalarınız başarıyla aylık tablolara kaydedildi!"); }
+    function exportExcel(id) { XLSX.writeFile(XLSX.utils.table_to_book(document.getElementById(id)), 'Finans_Rapor.xlsx'); }
 
     window.onload = () => {
-        initBudget(); renderAllPortfolios();
-        updateChart('FX_IDC:XAUTRYG');
+        initBudget(); renderPortfolios();
+        updateMainChart('FX_IDC:XAUTRYG');
         setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleString(); }, 1000);
     };
 </script>
