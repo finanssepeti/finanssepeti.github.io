@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finans Sepeti - Pro V9 Terminal</title>
+    <title>Finans Sepeti - Pro V10 Terminal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
@@ -13,7 +13,7 @@
             --bg: #e0e5ec;
             --shadow: 9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
             --inner-shadow: inset 6px 6px 12px #a3b1c6, inset -6px -6px 12px #ffffff;
-            --primary-blue: #2c3e50; /* Koyu Mavi Yazılar */
+            --primary-blue: #2c3e50;
             --light-grey: #a3b1c6;
         }
 
@@ -23,27 +23,8 @@
         .neu-btn:active { box-shadow: var(--inner-shadow); transform: scale(0.98); }
         .neu-input { background: var(--bg); border: none; padding: 12px; border-radius: 10px; box-shadow: var(--inner-shadow); width: 100%; box-sizing: border-box; margin-bottom: 10px; font-weight: bold; color: var(--primary-blue); }
         
-        /* 3D LOGO BUTONU */
-        .logo-3d {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #3498db; /* Mavi Tonu */
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            padding: 15px 30px;
-            background: var(--bg);
-            border-radius: 50px;
-            box-shadow: 6px 6px 12px var(--light-grey), -6px -6px 12px #ffffff;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-block;
-            border: none;
-            outline: none;
-        }
-        .logo-3d:active {
-            box-shadow: inset 4px 4px 8px var(--light-grey), inset -4px -4px 8px #ffffff;
-            transform: translateY(2px);
-        }
+        .logo-3d { font-size: 2rem; font-weight: 800; color: #3498db; text-transform: uppercase; letter-spacing: 3px; padding: 15px 30px; background: var(--bg); border-radius: 50px; box-shadow: 6px 6px 12px var(--light-grey), -6px -6px 12px #ffffff; cursor: pointer; transition: 0.3s; border: none; }
+        .logo-3d:active { box-shadow: inset 4px 4px 8px var(--light-grey), inset -4px -4px 8px #ffffff; }
 
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .nav-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; }
@@ -53,30 +34,17 @@
         .market-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
         .market-item { text-align: center; cursor: pointer; padding: 12px; border-radius: 15px; font-size: 0.75rem; font-weight: bold; }
         
-        .profile-info-grid { display: grid; grid-template-columns: 150px 1fr; gap: 15px; align-items: center; margin-top: 20px; }
-        .profile-label { font-weight: 600; color: var(--primary-blue); }
-        
-        #tv-chart-main, #tv-analysis-terminal { height: 600px; border-radius: 20px; overflow: hidden; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px; border-bottom: 1px solid #c2c9d6; text-align: left; }
+        .sub-total { background: #f8f9fa; font-weight: bold; color: #2c3e50; padding: 8px; border-radius: 8px; display: block; text-align: right; margin-top: 5px; box-shadow: var(--inner-shadow); }
     </style>
 </head>
 <body>
 
 <header>
-    <button class="neu-btn" onclick="showPage('auth-login-page')"><i class="fas fa-user"></i> Profil Sayfam</button>
-    
+    <button class="neu-btn" onclick="showPage('real-profile-page')"><i class="fas fa-user"></i> Profil Sayfam</button>
     <button class="logo-3d" onclick="location.reload()">FİNANS SEPETİ</button>
-    
-    <div style="display: flex; gap: 15px; align-items: center;">
-        <i class="fas fa-bell fa-lg" onclick="showPage('notifications-page')" style="cursor:pointer"></i>
-        <div class="dropdown" style="position:relative; display:inline-block;">
-            <button class="neu-btn"><i class="fas fa-bars"></i></button>
-            <div style="display:none; position:absolute; right:0; background:var(--bg); box-shadow:var(--shadow); z-index:100; border-radius:10px;" id="drop-menu">
-                <a href="#" style="display:block; padding:10px; text-decoration:none; color:var(--primary-blue);">Hakkımızda</a>
-                <a href="#" style="display:block; padding:10px; text-decoration:none; color:var(--primary-blue);">Bize Ulaşın</a>
-                <a href="#" style="display:block; padding:10px; text-decoration:none; color:var(--primary-blue);">Ödemeler</a>
-            </div>
-        </div>
-    </div>
+    <div id="live-clock"></div>
 </header>
 
 <div class="nav-bar neu-card">
@@ -88,58 +56,6 @@
     <button class="neu-btn" onclick="showPage('ebitda-page')">Harcamalar-Ebitda</button>
     <button class="neu-btn" onclick="showPage('analysis-page')">Teknik Analiz</button>
     <button class="neu-btn" onclick="showPage('news-page')">Haberler</button>
-</div>
-
-<div id="real-profile-page" class="page-content">
-    <div class="neu-card">
-        <h3>Kişisel Bilgiler</h3>
-        <div class="profile-info-grid">
-            <div class="profile-label">Kullanıcı Adı:</div>
-            <input type="text" id="p-username" class="neu-input" placeholder="Kullanıcı Adı girin...">
-            
-            <div class="profile-label">Üniversite:</div>
-            <input type="text" id="p-university" class="neu-input" placeholder="Üniversite girin...">
-            
-            <div class="profile-label">E-Mail:</div>
-            <input type="email" id="p-email-info" class="neu-input" placeholder="E-Mail adresi girin...">
-            
-            <div class="profile-label">Çalıştığı Kurum:</div>
-            <input type="text" id="p-company" class="neu-input" placeholder="Kurum girin...">
-            
-            <div class="profile-label">Hobiler:</div>
-            <textarea id="p-hobbies" class="neu-input" style="height: 60px;" placeholder="Hobilerinizi yazın..."></textarea>
-        </div>
-        
-        <div style="margin-top: 20px; display: flex; gap: 15px;">
-            <button class="neu-btn" style="background: #27ae60; color: white;" onclick="saveProfileData()">KAYDET</button>
-            <button class="neu-btn" onclick="alert('Düzenleme modu aktif.')">DÜZENLE</button>
-        </div>
-        
-        <hr style="margin: 30px 0;">
-        <div class="nav-bar">
-            <button class="neu-btn" onclick="showPage('friend-search-page')">Arkadaş Ekle</button>
-            <button class="neu-btn">Fotoğraflarım</button>
-            <button class="neu-btn">Mesajlarım</button>
-        </div>
-    </div>
-</div>
-
-<div id="friend-search-page" class="page-content">
-    <div class="neu-card">
-        <h3>Arkadaş Bul & Ekle</h3>
-        <div class="profile-info-grid">
-            <div class="profile-label">Adı:</div>
-            <input type="text" id="search-name" class="neu-input" placeholder="İsim ile ara...">
-            
-            <div class="profile-label">Soyadı:</div>
-            <input type="text" id="search-surname" class="neu-input" placeholder="Soyisim ile ara...">
-            
-            <div class="profile-label">E-Mail:</div>
-            <input type="text" id="search-email" class="neu-input" placeholder="Mail ile ara...">
-        </div>
-        <button class="neu-btn" style="width: 100%; margin-top: 15px;" onclick="searchUser()">Üyeler Arasında Ara</button>
-        <div id="search-results" style="margin-top: 20px;"></div>
-    </div>
 </div>
 
 <div id="markets-page" class="page-content active">
@@ -158,85 +74,148 @@
         <div class="market-item neu-card" onclick="updateMainChart('BINANCE:ETHTRY')">Etherium/TL</div>
         <div class="market-item neu-card" onclick="updateMainChart('BINANCE:ETHUSDT')">Etherium/USD</div>
     </div>
-    <div id="tv-chart-main" class="neu-card"></div>
+    <div id="tv-chart-main" class="neu-card" style="height: 500px;"></div>
 </div>
 
-<div id="auth-login-page" class="page-content">
-    <div class="neu-card" style="max-width: 400px; margin: auto; text-align: center;">
-        <h3>Oturum Aç</h3>
-        <input type="email" class="neu-input" placeholder="E-Mail">
-        <input type="password" class="neu-input" placeholder="Şifre">
-        <button class="neu-btn" onclick="showPage('real-profile-page')">İleri</button>
-        <p onclick="showPage('register-page')" style="cursor:pointer; font-size:0.8rem; margin-top:10px;">Üyelik Oluştur</p>
+<div id="add-investment" class="page-content">
+    <div class="neu-card">
+        <h3>Yatırım İşlemi Girişi</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+                <input type="text" id="asset-name" class="neu-input" placeholder="Ürün Adı">
+                <input type="number" id="unit-p" class="neu-input" placeholder="Birim Fiyat" oninput="calcInv()">
+                <input type="number" id="unit-a" class="neu-input" placeholder="Adet / Gram" oninput="calcInv()">
+                <div class="sub-total">İşlem Tutarı: <span id="cur-total">0.00</span> TL</div>
+            </div>
+            <div>
+                <input type="date" id="inv-date" class="neu-input">
+                <button class="neu-btn" style="width:100%; background:#27ae60; color:white; height:100px;" onclick="saveInvestment()">PORTFÖYE KAYDET</button>
+            </div>
+        </div>
+        <div class="sub-total" style="background:#34495e; color:white; margin-top:20px;">Günün Genel Toplamı: <span id="daily-sum">0.00</span> TL</div>
     </div>
 </div>
 
-<div id="register-page" class="page-content">
-    <div class="neu-card" style="max-width: 400px; margin: auto;">
-        <h3>Üyelik Oluştur</h3>
-        <input type="text" class="neu-input" placeholder="Ad">
-        <input type="text" class="neu-input" placeholder="Soyad">
-        <input type="email" class="neu-input" placeholder="E-Mail">
-        <input type="password" class="neu-input" placeholder="Şifre">
-        <button class="neu-btn" onclick="showPage('auth-login-page')">Kaydet</button>
+<div id="portfolio-page" class="page-content">
+    <div class="neu-card">
+        <h3>Varlık Portföyüm</h3>
+        <table id="main-port-table">
+            <thead><tr><th>Ürün</th><th>Miktar</th><th>Alış Fiyatı</th><th>Toplam</th><th>Tarih</th></tr></thead>
+            <tbody id="main-port-body"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="monthly-portfolio" class="page-content">
+    <div class="neu-card" id="monthly-container">
+        </div>
+</div>
+
+<div id="yearly-portfolio" class="page-content">
+    <div class="neu-card">
+        <div style="display:flex; justify-content:space-between;">
+            <h3>Yıllık Birleşik Portföy</h3>
+            <button class="neu-btn" onclick="exportXls('yearly-table')">Excel İndir</button>
+        </div>
+        <table id="yearly-table">
+            <thead><tr><th>Ürün</th><th>Toplam Miktar</th><th>Maliyet</th><th>Canlı Durum</th></tr></thead>
+            <tbody id="yearly-body"></tbody>
+        </table>
+    </div>
+</div>
+
+<div id="news-page" class="page-content">
+    <div class="neu-card">
+        <h3>Bloomberg Canlı Haberler</h3>
+        <div id="news-list">
+            <div class="neu-card" onclick="window.open('https://www.bloomberght.com')">Bloomberg HT Canlı Haber Akışını Görüntüle →</div>
+        </div>
+    </div>
+</div>
+
+<div id="real-profile-page" class="page-content">
+    <div class="neu-card">
+        <h3>Kişisel Bilgiler</h3>
+        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 15px; align-items: center;">
+            <div>Kullanıcı Adı:</div><input type="text" id="p-username" class="neu-input">
+            <div>Üniversite:</div><input type="text" id="p-university" class="neu-input">
+            <div>E-Mail:</div><input type="email" id="p-email" class="neu-input">
+            <div>Kurum:</div><input type="text" id="p-company" class="neu-input">
+            <div>Hobiler:</div><textarea id="p-hobbies" class="neu-input"></textarea>
+        </div>
+        <div style="margin-top: 15px; display: flex; gap: 10px;">
+            <button class="neu-btn" style="background: #27ae60; color: white;" onclick="alert('Bilgiler kaydedildi!')">KAYDET</button>
+            <button class="neu-btn">DÜZENLE</button>
+        </div>
     </div>
 </div>
 
 <div id="ebitda-page" class="page-content">
     <div class="neu-card">
         <h3>Harcamalar-Ebitda</h3>
-        <div id="ebitda-form-container"></div>
+        <div id="ebitda-inputs"></div>
     </div>
 </div>
-<div id="analysis-page" class="page-content"><div class="neu-card"><div id="tv-analysis-terminal"></div></div></div>
 
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
-    // VERİ KAYDETME SİSTEMİ
-    function saveProfileData() {
-        const profile = {
-            username: document.getElementById('p-username').value,
-            university: document.getElementById('p-university').value,
-            email: document.getElementById('p-email-info').value,
-            company: document.getElementById('p-company').value,
-            hobbies: document.getElementById('p-hobbies').value
+    let port_db = JSON.parse(localStorage.getItem('f_port')) || [];
+    const aylar = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+
+    function calcInv() {
+        let p = document.getElementById('unit-p').value || 0;
+        let a = document.getElementById('unit-a').value || 0;
+        document.getElementById('cur-total').innerText = (p * a).toFixed(2);
+    }
+
+    function saveInvestment() {
+        const item = {
+            n: document.getElementById('asset-name').value,
+            p: parseFloat(document.getElementById('unit-p').value),
+            a: parseFloat(document.getElementById('unit-a').value),
+            t: parseFloat(document.getElementById('cur-total').innerText),
+            d: document.getElementById('inv-date').value,
+            m: aylar[new Date(document.getElementById('inv-date').value).getMonth()]
         };
-        localStorage.setItem('userProfile', JSON.stringify(profile));
-        alert("Profil bilgileriniz başarıyla kaydedildi!");
+        port_db.push(item);
+        localStorage.setItem('f_port', JSON.stringify(port_db));
+        renderPortfolios();
+        alert("Kaydedildi!");
     }
 
-    // ARKADAŞ ARAMA SİMÜLASYONU
-    function searchUser() {
-        const name = document.getElementById('search-name').value;
-        const results = document.getElementById('search-results');
-        if(!name) { alert("Lütfen arama yapmak için isim girin."); return; }
-        results.innerHTML = `<div class="neu-card">Sonuç bulundu: <b>${name}</b> <button class="neu-btn" style="font-size:0.7rem;">İstek Gönder</button></div>`;
+    function renderPortfolios() {
+        document.getElementById('main-port-body').innerHTML = port_db.map(i => `<tr><td>${i.n}</td><td>${i.a}</td><td>${i.p}</td><td>${i.t} TL</td><td>${i.d}</td></tr>`).join('');
+        
+        const monthly = document.getElementById('monthly-container');
+        monthly.innerHTML = "<h3>Aylık Alımlar</h3>";
+        aylar.forEach(m => {
+            const data = port_db.filter(i => i.m === m);
+            if(data.length > 0) {
+                monthly.innerHTML += `<div class="neu-card"><b>${m}</b><table>${data.map(i => `<tr><td>${i.n}</td><td>${i.a}</td><td>Canlı Fiyat: ${i.p}</td></tr>`).join('')}</table></div>`;
+            }
+        });
+        
+        document.getElementById('yearly-body').innerHTML = port_db.map(i => `<tr><td>${i.n}</td><td>${i.a}</td><td>${i.p}</td><td>Kar/Zarar: %0</td></tr>`).join('');
     }
 
-    // SAYFA YÖNETİMİ & GRAFİK
     function showPage(id) {
         document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(id === 'analysis-page') loadAnalysis();
+        if(id === 'monthly-portfolio' || id === 'yearly-portfolio') renderPortfolios();
     }
 
     function updateMainChart(s) {
         new TradingView.widget({"autosize": true, "symbol": s, "interval": "15", "theme": "light", "container_id": "tv-chart-main"});
     }
 
-    function loadAnalysis() {
-        new TradingView.widget({"autosize": true, "symbol": "BIST:XU100", "interval": "15", "theme": "light", "container_id": "tv-analysis-terminal", "allow_symbol_change": true});
+    function exportXls(id) {
+        XLSX.writeFile(XLSX.utils.table_to_book(document.getElementById(id)), 'Finans_Raporu.xlsx');
     }
 
     window.onload = () => {
+        renderPortfolios();
         updateMainChart('FX_IDC:XAUTRYG');
         setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleString(); }, 1000);
-        
-        // Menü Aç/Kapat
-        document.querySelector('.dropdown button').onclick = function() {
-            const m = document.getElementById('drop-menu');
-            m.style.display = m.style.display === 'block' ? 'none' : 'block';
-        };
     };
 </script>
 </body>
