@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finans Sepeti - Pro V10 Terminal</title>
+    <title>Finans Sepeti - Pro Final V11</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
@@ -23,9 +23,8 @@
         .neu-btn:active { box-shadow: var(--inner-shadow); transform: scale(0.98); }
         .neu-input { background: var(--bg); border: none; padding: 12px; border-radius: 10px; box-shadow: var(--inner-shadow); width: 100%; box-sizing: border-box; margin-bottom: 10px; font-weight: bold; color: var(--primary-blue); }
         
-        .logo-3d { font-size: 2rem; font-weight: 800; color: #3498db; text-transform: uppercase; letter-spacing: 3px; padding: 15px 30px; background: var(--bg); border-radius: 50px; box-shadow: 6px 6px 12px var(--light-grey), -6px -6px 12px #ffffff; cursor: pointer; transition: 0.3s; border: none; }
-        .logo-3d:active { box-shadow: inset 4px 4px 8px var(--light-grey), inset -4px -4px 8px #ffffff; }
-
+        .logo-3d { font-size: 2rem; font-weight: 800; color: #3498db; text-transform: uppercase; letter-spacing: 3px; padding: 15px 30px; background: var(--bg); border-radius: 50px; box-shadow: 6px 6px 12px var(--light-grey), -6px -6px 12px #ffffff; cursor: pointer; border: none; }
+        
         header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
         .nav-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; }
         .page-content { display: none; }
@@ -37,6 +36,7 @@
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { padding: 12px; border-bottom: 1px solid #c2c9d6; text-align: left; }
         .sub-total { background: #f8f9fa; font-weight: bold; color: #2c3e50; padding: 8px; border-radius: 8px; display: block; text-align: right; margin-top: 5px; box-shadow: var(--inner-shadow); }
+        .ebitda-header { background: #27ae60; color: white; padding: 15px; border-radius: 15px; font-size: 1.3rem; font-weight: bold; text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -44,7 +44,7 @@
 <header>
     <button class="neu-btn" onclick="showPage('real-profile-page')"><i class="fas fa-user"></i> Profil Sayfam</button>
     <button class="logo-3d" onclick="location.reload()">FİNANS SEPETİ</button>
-    <div id="live-clock"></div>
+    <div id="live-clock" style="font-weight: 600;"></div>
 </header>
 
 <div class="nav-bar neu-card">
@@ -92,128 +92,123 @@
                 <button class="neu-btn" style="width:100%; background:#27ae60; color:white; height:100px;" onclick="saveInvestment()">PORTFÖYE KAYDET</button>
             </div>
         </div>
-        <div class="sub-total" style="background:#34495e; color:white; margin-top:20px;">Günün Genel Toplamı: <span id="daily-sum">0.00</span> TL</div>
     </div>
 </div>
 
-<div id="portfolio-page" class="page-content">
+<div id="ebitda-page" class="page-content">
     <div class="neu-card">
-        <h3>Varlık Portföyüm</h3>
-        <table id="main-port-table">
-            <thead><tr><th>Ürün</th><th>Miktar</th><th>Alış Fiyatı</th><th>Toplam</th><th>Tarih</th></tr></thead>
-            <tbody id="main-port-body"></tbody>
-        </table>
+        <h3>Harcamalar & EBITDA Takibi</h3>
+        <select class="neu-input" id="budget-month" style="width:200px;">
+            <option>Ocak</option><option>Şubat</option><option>Mart</option><option>Nisan</option><option>Mayıs</option><option>Haziran</option><option>Temmuz</option><option>Ağustos</option><option>Eylül</option><option>Ekim</option><option>Kasım</option><option>Aralık</option>
+        </select>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="neu-card">
+                <h4>Gelirler</h4><div id="inc-inputs"></div><div class="sub-total">Toplam Gelir: <span id="sum-inc">0</span></div>
+            </div>
+            <div class="neu-card">
+                <h4>Giderler</h4>
+                <h5>Faturalar</h5> <div id="g1-inputs"></div><div class="sub-total">Toplam Faturalarım: <span id="sum-g1">0</span></div>
+                <h5>Genel Giderler</h5> <div id="g2-inputs"></div><div class="sub-total">Toplam Genel Giderler: <span id="sum-g2">0</span></div>
+                <h5>Kredi Kartları</h5> <div id="g3-inputs"></div><div class="sub-total">Toplam Kredi Kartlarım: <span id="sum-g3">0</span></div>
+                <h5>Krediler (EBITDA Dışı)</h5> <div id="g4-inputs"></div><div class="sub-total">Toplam Kredilerim: <span id="sum-g4">0</span></div>
+            </div>
+        </div>
+        <div class="ebitda-header">AYLIK EBITDA: <span id="ebitda-val">0</span> TL</div>
+        <button class="neu-btn" style="width:100%; margin-top:15px; background:#2c3e50; color:white;" onclick="alert('Bütçe Verileri Kaydedildi!')">BÜTÇEYİ KAYDET</button>
     </div>
 </div>
 
-<div id="monthly-portfolio" class="page-content">
-    <div class="neu-card" id="monthly-container">
-        </div>
-</div>
-
-<div id="yearly-portfolio" class="page-content">
+<div id="analysis-page" class="page-content">
     <div class="neu-card">
-        <div style="display:flex; justify-content:space-between;">
-            <h3>Yıllık Birleşik Portföy</h3>
-            <button class="neu-btn" onclick="exportXls('yearly-table')">Excel İndir</button>
-        </div>
-        <table id="yearly-table">
-            <thead><tr><th>Ürün</th><th>Toplam Miktar</th><th>Maliyet</th><th>Canlı Durum</th></tr></thead>
-            <tbody id="yearly-body"></tbody>
-        </table>
+        <div id="tv-analysis-terminal" style="height: 700px;"></div>
     </div>
 </div>
 
 <div id="news-page" class="page-content">
     <div class="neu-card">
         <h3>Bloomberg Canlı Haberler</h3>
-        <div id="news-list">
-            <div class="neu-card" onclick="window.open('https://www.bloomberght.com')">Bloomberg HT Canlı Haber Akışını Görüntüle →</div>
+        <div class="neu-card" onclick="window.open('https://www.bloomberght.com', '_blank')" style="cursor:pointer; border: 2px solid #3498db;">
+            <h4 style="color:#3498db; margin:0;"><i class="fas fa-external-link-alt"></i> Bloomberg HT Canlı Haber Akışı İçin Tıklayın</h4>
+            <p style="font-size: 0.8rem; margin: 10px 0 0 0;">(Yeni sekmede Bloomberg web sitesine yönlendirilirsiniz)</p>
         </div>
     </div>
 </div>
+
+<div id="portfolio-page" class="page-content"><div class="neu-card"><h3>Portföyüm</h3><table id="port-table"><thead><tr><th>Ürün</th><th>Miktar</th><th>Toplam</th></tr></thead><tbody id="port-body"></tbody></table></div></div>
+<div id="monthly-portfolio" class="page-content"><div class="neu-card" id="monthly-container"></div></div>
+<div id="yearly-portfolio" class="page-content"><div class="neu-card"><h3>Yıllık Portföy</h3><table id="yearly-table"><thead><tr><th>Ürün</th><th>Adet</th></tr></thead><tbody id="yearly-body"></tbody></table></div></div>
 
 <div id="real-profile-page" class="page-content">
     <div class="neu-card">
         <h3>Kişisel Bilgiler</h3>
         <div style="display: grid; grid-template-columns: 150px 1fr; gap: 15px; align-items: center;">
-            <div>Kullanıcı Adı:</div><input type="text" id="p-username" class="neu-input">
-            <div>Üniversite:</div><input type="text" id="p-university" class="neu-input">
-            <div>E-Mail:</div><input type="email" id="p-email" class="neu-input">
-            <div>Kurum:</div><input type="text" id="p-company" class="neu-input">
-            <div>Hobiler:</div><textarea id="p-hobbies" class="neu-input"></textarea>
+            <div>Kullanıcı Adı:</div><input type="text" class="neu-input">
+            <div>Üniversite:</div><input type="text" class="neu-input">
+            <div>E-Mail:</div><input type="email" class="neu-input">
+            <div>Kurum:</div><input type="text" class="neu-input">
+            <div>Hobiler:</div><textarea class="neu-input"></textarea>
         </div>
-        <div style="margin-top: 15px; display: flex; gap: 10px;">
-            <button class="neu-btn" style="background: #27ae60; color: white;" onclick="alert('Bilgiler kaydedildi!')">KAYDET</button>
-            <button class="neu-btn">DÜZENLE</button>
-        </div>
-    </div>
-</div>
-
-<div id="ebitda-page" class="page-content">
-    <div class="neu-card">
-        <h3>Harcamalar-Ebitda</h3>
-        <div id="ebitda-inputs"></div>
+        <button class="neu-btn" style="margin-top:15px; background: #27ae60; color: white;">KAYDET</button>
     </div>
 </div>
 
 <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
     let port_db = JSON.parse(localStorage.getItem('f_port')) || [];
-    const aylar = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
 
+    // HARCAMALAR - EBİTDA SİSTEMİ
+    function initBudget() {
+        const build = (id, cls) => { 
+            const el = document.getElementById(id); 
+            if(el) {
+                el.innerHTML = "";
+                for(let i=1; i<=5; i++) el.innerHTML += `<input type="number" class="neu-input ${cls}" placeholder="Kalem ${i}" oninput="calcBudget()">`; 
+            }
+        }
+        build('inc-inputs', 'inc-v'); build('g1-inputs', 'g1-v'); build('g2-inputs', 'g2-v'); build('g3-inputs', 'g3-v'); build('g4-inputs', 'g4-v');
+    }
+
+    function calcBudget() {
+        const sum = (cls, target) => { 
+            let s = [...document.querySelectorAll('.'+cls)].reduce((a,b) => a + (Number(b.value)||0), 0); 
+            document.getElementById(target).innerText = s.toLocaleString(); return s; 
+        }
+        let inc = sum('inc-v', 'sum-inc');
+        let g1 = sum('g1-v', 'sum-g1');
+        let g2 = sum('g2-v', 'sum-g2');
+        let g3 = sum('g3-v', 'sum-g3');
+        let g4 = sum('g4-v', 'sum-g4');
+        document.getElementById('ebitda-val').innerText = (inc - (g1+g2+g3)).toLocaleString();
+    }
+
+    // TEKNİK ANALİZ ROBOTU
+    function loadAnalysisRobot() {
+        new TradingView.widget({
+            "autosize": true, "symbol": "BIST:XU100", "interval": "15", "theme": "light", "container_id": "tv-analysis-terminal",
+            "studies": ["RSI@tv-basicstudies", "MASimple@tv-basicstudies", "BollingerBandsLower@tv-basicstudies", "MACD@tv-basicstudies"],
+            "allow_symbol_change": true
+        });
+    }
+
+    // YATIRIM HESAPLAMA
     function calcInv() {
         let p = document.getElementById('unit-p').value || 0;
         let a = document.getElementById('unit-a').value || 0;
         document.getElementById('cur-total').innerText = (p * a).toFixed(2);
     }
 
-    function saveInvestment() {
-        const item = {
-            n: document.getElementById('asset-name').value,
-            p: parseFloat(document.getElementById('unit-p').value),
-            a: parseFloat(document.getElementById('unit-a').value),
-            t: parseFloat(document.getElementById('cur-total').innerText),
-            d: document.getElementById('inv-date').value,
-            m: aylar[new Date(document.getElementById('inv-date').value).getMonth()]
-        };
-        port_db.push(item);
-        localStorage.setItem('f_port', JSON.stringify(port_db));
-        renderPortfolios();
-        alert("Kaydedildi!");
-    }
-
-    function renderPortfolios() {
-        document.getElementById('main-port-body').innerHTML = port_db.map(i => `<tr><td>${i.n}</td><td>${i.a}</td><td>${i.p}</td><td>${i.t} TL</td><td>${i.d}</td></tr>`).join('');
-        
-        const monthly = document.getElementById('monthly-container');
-        monthly.innerHTML = "<h3>Aylık Alımlar</h3>";
-        aylar.forEach(m => {
-            const data = port_db.filter(i => i.m === m);
-            if(data.length > 0) {
-                monthly.innerHTML += `<div class="neu-card"><b>${m}</b><table>${data.map(i => `<tr><td>${i.n}</td><td>${i.a}</td><td>Canlı Fiyat: ${i.p}</td></tr>`).join('')}</table></div>`;
-            }
-        });
-        
-        document.getElementById('yearly-body').innerHTML = port_db.map(i => `<tr><td>${i.n}</td><td>${i.a}</td><td>${i.p}</td><td>Kar/Zarar: %0</td></tr>`).join('');
-    }
-
     function showPage(id) {
         document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
         document.getElementById(id).classList.add('active');
-        if(id === 'monthly-portfolio' || id === 'yearly-portfolio') renderPortfolios();
+        if(id === 'analysis-page') loadAnalysisRobot();
     }
 
     function updateMainChart(s) {
         new TradingView.widget({"autosize": true, "symbol": s, "interval": "15", "theme": "light", "container_id": "tv-chart-main"});
     }
 
-    function exportXls(id) {
-        XLSX.writeFile(XLSX.utils.table_to_book(document.getElementById(id)), 'Finans_Raporu.xlsx');
-    }
-
     window.onload = () => {
-        renderPortfolios();
+        initBudget();
         updateMainChart('FX_IDC:XAUTRYG');
         setInterval(() => { document.getElementById('live-clock').innerText = new Date().toLocaleString(); }, 1000);
     };
